@@ -23,7 +23,7 @@ class AppInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
+  void onError(DioException err, ErrorInterceptorHandler handler) {
     final statusCode = err.response?.statusCode;
     if ((statusCode == HttpStatus.forbidden ||
             statusCode == HttpStatus.unauthorized) &&
@@ -35,9 +35,7 @@ class AppInterceptor extends Interceptor {
   }
 
   Future<void> _doRefreshToken(
-    DioError err,
-    ErrorInterceptorHandler handler,
-  ) async {
+      DioException ex, ErrorInterceptorHandler handler) async {
     try {
       // TODO Request new token
 
@@ -47,22 +45,21 @@ class AppInterceptor extends Interceptor {
 
       // Create request with new access token
       final options = Options(
-          method: err.requestOptions.method,
-          headers: err.requestOptions.headers);
+          method: ex.requestOptions.method, headers: ex.requestOptions.headers);
       final newRequest = await _dio.request(
-          "${err.requestOptions.baseUrl}${err.requestOptions.path}",
+          "${ex.requestOptions.baseUrl}${ex.requestOptions.path}",
           options: options,
-          data: err.requestOptions.data,
-          queryParameters: err.requestOptions.queryParameters);
+          data: ex.requestOptions.data,
+          queryParameters: ex.requestOptions.queryParameters);
       handler.resolve(newRequest);
       //  } else {
       //    handler.next(err);
       //  }
     } catch (exception) {
-      if (exception is DioError) {
+      if (exception is DioException) {
         handler.next(exception);
       } else {
-        handler.next(err);
+        handler.next(ex);
       }
     }
   }
