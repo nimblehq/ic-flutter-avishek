@@ -31,8 +31,8 @@ class DioProvider {
     }
 
     return dio
-      ..options.connectTimeout = 3000
-      ..options.receiveTimeout = 5000
+      ..options.connectTimeout = 3000 as Duration?
+      ..options.receiveTimeout = 5000 as Duration?
       ..options.headers = {headerContentType: defaultContentType}
       ..interceptors.addAll(interceptors);
   }
