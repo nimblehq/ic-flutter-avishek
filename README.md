@@ -1,6 +1,6 @@
 # Survey
 
-[![codecov](https://codecov.io/gh/nimblehq/flutter-templates/branch/main/graph/badge.svg?token=ATUNXDX218)](https://codecov.io/gh/nimblehq/flutter-templates)
+[![codecov](https://codecov.io/gh/nimblehq/ic-flutter-avishek/branch/main/graph/badge.svg?token=ATUNXDX218)](https://codecov.io/gh/nimblehq/ic-flutter-avishek)
 
 All the templates that can be used to kick off a new Flutter application quickly.
 
@@ -51,10 +51,6 @@ Clone the repository
   - For example:
 
     `$ fvm flutter drive --driver=test_driver/integration_test.dart --target=integration_test/my_home_page_test.dart --flavor staging`
-
-- Code coverage integration:
-
-  - CodeCov: for the private repository, we need to set up a [TeamBot](https://docs.codecov.com/docs/team-bot) in `codecov.yml`.
 
 ## License
 
