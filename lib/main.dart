@@ -6,6 +6,8 @@ import 'package:flutter_survey/gen/assets.gen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import 'env.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
@@ -83,7 +85,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 24),
             Text(AppLocalizations.of(context)!.hello),
             Text(
-              FlutterConfig.get('CLIENT_SECRET'),
+              FlutterConfig.get(Env.authClientSecret),
               style: const TextStyle(color: Colors.black, fontSize: 24),
             ),
             const SizedBox(height: 24),
