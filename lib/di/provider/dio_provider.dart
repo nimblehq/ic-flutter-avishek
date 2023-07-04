@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_survey/di/interceptor/app_interceptor.dart';
+import 'package:injectable/injectable.dart';
 
 const String headerContentType = 'Content-Type';
 const String defaultContentType = 'application/json; charset=utf-8';
 
+@LazySingleton()
 class DioProvider {
   Dio? _dio;
 
@@ -31,8 +33,8 @@ class DioProvider {
     }
 
     return dio
-      ..options.connectTimeout = 3000 as Duration?
-      ..options.receiveTimeout = 5000 as Duration?
+      ..options.connectTimeout = const Duration(seconds: 30)
+      ..options.receiveTimeout = const Duration(seconds: 50)
       ..options.headers = {headerContentType: defaultContentType}
       ..interceptors.addAll(interceptors);
   }
