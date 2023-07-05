@@ -3,6 +3,7 @@ import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_survey/di/di.dart';
 import 'package:flutter_survey/gen/assets.gen.dart';
+import 'package:flutter_survey/theme/app_theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -42,11 +43,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        brightness: Brightness.light,
-        fontFamily: Assets.fonts.neuzeit,
-      ),
+      theme: AppTheme.light
+          .copyWith(scaffoldBackgroundColor: const Color(0x00000000)),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routeInformationProvider: _router.routeInformationProvider,
@@ -83,10 +81,11 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Text(AppLocalizations.of(context)!.hello),
+            Text(AppLocalizations.of(context)!.hello,
+                style: Theme.of(context).textTheme.bodyMedium),
             Text(
-              FlutterConfig.get(Env.authClientSecret),
-              style: const TextStyle(color: Colors.black, fontSize: 24),
+              Env.authClientSecret,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
             const SizedBox(height: 24),
             ElevatedButton(

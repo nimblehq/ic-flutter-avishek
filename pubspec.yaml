@@ -70,4 +70,6 @@ flutter:
   fonts:
     - family: neuzeit
       fonts:
-        - asset: assets/fonts/neuzeit.otf
+        - asset: assets/fonts/neuzeit_book.otf
+        - asset: assets/fonts/neuzeit_heavy.otf
+          weight: 800
