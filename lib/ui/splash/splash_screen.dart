@@ -5,9 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../gen/assets.gen.dart';
 import '../widget/dimmed_image_background.dart';
 
-const _logoRevealDurationInMillis = Duration(milliseconds: 500);
-const _logoDurationInMillis = Duration(milliseconds: 750);
-const _loginFormRevealDurationInMillis = Duration(milliseconds: 700);
+const _logoRevealDuration = Duration(milliseconds: 500);
+const _logoDuration = Duration(milliseconds: 750);
+const _loginFormRevealDuration = Duration(milliseconds: 700);
 
 final _shouldAnimateLogoPositionProvider =
     StateProvider.autoDispose<bool>((_) => false);
@@ -23,7 +23,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     with TickerProviderStateMixin {
   late final AnimationController _logoRevealAnimationController =
       AnimationController(
-    duration: _logoRevealDurationInMillis,
+    duration: _logoRevealDuration,
     vsync: this,
   )..forward();
   late final Animation<double> _logoRevealAnimation = CurvedAnimation(
@@ -33,22 +33,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       if (status == AnimationStatus.completed) {
         final shouldAnimateLogoPosition =
             ref.read(_shouldAnimateLogoPositionProvider.notifier);
-        Future.delayed(_logoDurationInMillis, () {
+        Future.delayed(_logoDuration, () {
           shouldAnimateLogoPosition.state = !shouldAnimateLogoPosition.state;
-          _backgroundBlurAnimationController.forward();
         });
       }
     });
-
-  late final AnimationController _backgroundBlurAnimationController =
-      AnimationController(
-    duration: _loginFormRevealDurationInMillis,
-    vsync: this,
-  );
-  late final Animation<double> _backgroundBlurAnimation = CurvedAnimation(
-    parent: _backgroundBlurAnimationController,
-    curve: Curves.easeIn,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -59,17 +48,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(children: [
-        DimmedImageBackground(
-          image: Assets.images.bgSplash.image().image,
-          shouldBlur: true,
-          backgroundAnimation: _backgroundBlurAnimation,
-        ),
+        Consumer(builder: (_, widgetRef, __) {
+          final shouldAnimateBlur =
+              widgetRef.watch(_shouldAnimateLogoPositionProvider);
+          return DimmedImageBackground(
+            image: Assets.images.bgSplash.image().image,
+            shouldBlur: true,
+            shouldAnimate: shouldAnimateBlur,
+            animationDuration: _loginFormRevealDuration,
+          );
+        }),
         Consumer(
           builder: (_, widgetRef, __) {
             final shouldAnimateLogoPosition =
                 widgetRef.watch(_shouldAnimateLogoPositionProvider);
             return AnimatedPositioned(
-              duration: _loginFormRevealDurationInMillis,
+              duration: _loginFormRevealDuration,
               curve: Curves.easeIn,
               bottom: 0.0,
               right: 0.0,
@@ -77,7 +71,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               top: shouldAnimateLogoPosition ? -500 : 0.0,
               child: Center(
                 child: AnimatedScale(
-                  duration: _loginFormRevealDurationInMillis,
+                  duration: _loginFormRevealDuration,
                   scale: shouldAnimateLogoPosition ? 0.83 : 1,
                   curve: Curves.easeIn,
                   child: FadeTransition(
@@ -96,7 +90,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   @override
   void dispose() {
     _logoRevealAnimationController.dispose();
-    _backgroundBlurAnimationController.dispose();
     super.dispose();
   }
 }

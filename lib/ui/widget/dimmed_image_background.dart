@@ -6,22 +6,36 @@ import 'dimmed_background.dart';
 class DimmedImageBackground extends StatefulWidget {
   final ImageProvider image;
   final bool shouldBlur;
-  final Animation<double>? backgroundAnimation;
+  final bool shouldAnimate;
+  final Duration animationDuration;
 
   const DimmedImageBackground({
     super.key,
     required this.image,
     this.shouldBlur = false,
-    this.backgroundAnimation,
+    this.shouldAnimate = false,
+    this.animationDuration = const Duration(milliseconds: 0),
   });
 
   @override
   DimmedImageBackgroundState createState() => DimmedImageBackgroundState();
 }
 
-class DimmedImageBackgroundState extends State<DimmedImageBackground> {
+class DimmedImageBackgroundState extends State<DimmedImageBackground>
+    with TickerProviderStateMixin {
+  late final AnimationController _backgroundBlurAnimationController =
+      AnimationController(
+    duration: widget.animationDuration,
+    vsync: this,
+  );
+  late final Animation<double> _backgroundBlurAnimation = CurvedAnimation(
+    parent: _backgroundBlurAnimationController,
+    curve: Curves.easeIn,
+  );
+
   @override
   Widget build(BuildContext context) {
+    if (widget.shouldAnimate) _backgroundBlurAnimationController.forward();
     return Stack(
       children: [
         Container(
@@ -34,15 +48,12 @@ class DimmedImageBackgroundState extends State<DimmedImageBackground> {
         ),
         if (widget.shouldBlur)
           BlurredBackground(
-            backgroundAnimation: widget.backgroundAnimation,
+            backgroundAnimation: _backgroundBlurAnimation,
           ),
-        if (widget.backgroundAnimation != null)
-          FadeTransition(
-            opacity: widget.backgroundAnimation!,
-            child: _buildDimmedImageBackground(),
-          )
-        else
-          _buildDimmedImageBackground(),
+        FadeTransition(
+          opacity: _backgroundBlurAnimation,
+          child: _buildDimmedImageBackground(),
+        )
       ],
     );
   }
@@ -55,5 +66,11 @@ class DimmedImageBackgroundState extends State<DimmedImageBackground> {
       ],
       stops: const [0.0, 1.0],
     );
+  }
+
+  @override
+  void dispose() {
+    _backgroundBlurAnimationController.dispose();
+    super.dispose();
   }
 }
