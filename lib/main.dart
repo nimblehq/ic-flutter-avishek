@@ -43,8 +43,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      theme: AppTheme.light
-          .copyWith(scaffoldBackgroundColor: const Color(0x00000000)),
+      theme:
+          AppTheme.light.copyWith(scaffoldBackgroundColor: Colors.transparent),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       routeInformationProvider: _router.routeInformationProvider,
