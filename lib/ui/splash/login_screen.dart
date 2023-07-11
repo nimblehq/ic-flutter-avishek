@@ -15,14 +15,14 @@ const _loginFormRevealDuration = Duration(milliseconds: 700);
 final _shouldAnimateLogoPositionProvider =
     StateProvider.autoDispose<bool>((_) => false);
 
-class SplashScreen extends ConsumerStatefulWidget {
-  const SplashScreen({super.key});
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _SplashScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen>
+class _LoginScreenState extends ConsumerState<LoginScreen>
     with TickerProviderStateMixin {
   late final AnimationController _logoRevealAnimationController =
       AnimationController(
@@ -54,10 +54,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return _buildSplashScreen();
+    return _buildLoginScreen();
   }
 
-  Widget _buildSplashScreen() {
+  Widget _buildLoginScreen() {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(children: [
