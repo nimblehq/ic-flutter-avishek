@@ -1,6 +1,5 @@
 import 'dart:core';
 
-import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_survey/env.dart';
 import 'package:json_annotation/json_annotation.dart';
 

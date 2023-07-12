@@ -1,5 +1,6 @@
-import 'package:flutter_survey/model/AuthToken.dart';
 import 'package:json_annotation/json_annotation.dart';
+
+import '../auth_token.dart';
 
 part 'auth_token_response.g.dart';
 

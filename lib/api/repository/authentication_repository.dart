@@ -2,7 +2,7 @@ import 'package:flutter_survey/api/authentication_service.dart';
 import 'package:flutter_survey/model/response/auth_token_response.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../model/AuthToken.dart';
+import '../../model/auth_token.dart';
 import '../../model/request/auth_token_request.dart';
 import '../exception/network_exceptions.dart';
 
