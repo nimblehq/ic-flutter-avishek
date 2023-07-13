@@ -11,12 +11,12 @@ class AuthTokenResponse {
   final String tokenType;
   final int expiresIn;
 
-  AuthTokenResponse(
-    this.accessToken,
-    this.refreshToken,
-    this.tokenType,
-    this.expiresIn,
-  );
+  AuthTokenResponse({
+    required this.accessToken,
+    required this.refreshToken,
+    required this.tokenType,
+    required this.expiresIn,
+  });
 
   factory AuthTokenResponse.fromJson(Map<String, dynamic> json) =>
       _$AuthTokenResponseFromJson(json);
