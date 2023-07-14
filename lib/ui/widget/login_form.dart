@@ -36,15 +36,13 @@ class LoginFormState extends ConsumerState<LoginForm> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TextFormField(
+          key: LoginScreenKey.tfEmail,
           decoration: PrimaryTextFormFieldDecoration(
             context: context,
             hint: AppLocalizations.of(context)!.email,
           ),
           keyboardType: TextInputType.emailAddress,
-          style: Theme
-              .of(context)
-              .textTheme
-              .bodyMedium,
+          style: Theme.of(context).textTheme.bodyMedium,
           textInputAction: TextInputAction.next,
           controller: _emailController,
           validator: _emailValidator,
@@ -54,6 +52,7 @@ class LoginFormState extends ConsumerState<LoginForm> {
         Stack(
           children: [
             TextFormField(
+              key: LoginScreenKey.tfPassword,
               decoration: PrimaryTextFormFieldDecoration(
                 context: context,
                 hint: AppLocalizations.of(context)!.password,
@@ -63,19 +62,15 @@ class LoginFormState extends ConsumerState<LoginForm> {
                       right: forgotButtonWidth,
                       top: 15, // O:
                       bottom: 15 // use dimen constants
-                  )),
+                      )),
               obscureText: true,
               obscuringCharacter: "●",
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .bodyMedium,
+              style: Theme.of(context).textTheme.bodyMedium,
               textInputAction: TextInputAction.done,
               controller: _passwordController,
               validator: _passwordValidator,
               autovalidateMode: AutovalidateMode.onUserInteraction,
-              onFieldSubmitted: (_) =>
-              {
+              onFieldSubmitted: (_) => {
                 // TODO: log in
               },
             ),
@@ -84,15 +79,12 @@ class LoginFormState extends ConsumerState<LoginForm> {
               child: SizedBox(
                 height: 56,
                 child: TextButton(
+                  key: LoginScreenKey.btLogin,
                   child: Text(
                     AppLocalizations.of(context)!.forgotPassword,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(
-                      color: AppColors.whiteAlpha50,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: AppColors.whiteAlpha50,
+                        ),
                   ),
                   onPressed: () {
                     _logIn();
@@ -119,16 +111,11 @@ class LoginFormState extends ConsumerState<LoginForm> {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               ),
               textStyle: MaterialStateProperty.all(
-                Theme
-                    .of(context)
-                    .textTheme
-                    .labelLarge,
+                Theme.of(context).textTheme.labelLarge,
               ),
             ),
             child: Text(AppLocalizations.of(context)!.login),
-            onPressed: () => {
-            _logIn()
-          },
+            onPressed: () => {_logIn()},
           ),
         ),
       ],
@@ -152,7 +139,7 @@ class LoginFormState extends ConsumerState<LoginForm> {
   }
 
   void _logIn() {
-    if(!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) return;
     Util.hideKeyboard(context);
     ref
         .read(loginViewModelProvider.notifier)

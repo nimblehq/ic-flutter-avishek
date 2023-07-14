@@ -24,6 +24,14 @@ final loginViewModelProvider =
 final _shouldAnimateLogoPositionProvider =
     StateProvider.autoDispose<bool>((_) => false);
 
+class LoginScreenKey {
+  LoginScreenKey._();
+
+  static const tfEmail = Key('tfLoginEmail');
+  static const tfPassword = Key('tfLoginPassword');
+  static const btLogin = Key('btLogin');
+}
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 

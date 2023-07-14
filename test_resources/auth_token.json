@@ -1,0 +1,13 @@
+{
+  "data": {
+    "id": "10",
+    "type": "token",
+    "attributes": {
+      "access_token": "accessToken",
+      "token_type": "Bearer",
+      "expires_in": 10000,
+      "refresh_token": "refreshToken",
+      "created_at": 1666666666
+    }
+  }
+}
