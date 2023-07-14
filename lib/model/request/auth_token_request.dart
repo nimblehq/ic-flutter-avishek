@@ -11,9 +11,9 @@ const _grantTypePassword = "password";
 class AuthTokenRequest {
   final String email;
   final String password;
-  String grantType = _grantTypePassword;
-  String clientId = Env.authClientId;
-  String clientSecret = Env.authClientSecret;
+  final String grantType = _grantTypePassword;
+  final String clientId = Env.authClientId;
+  final String clientSecret = Env.authClientSecret;
 
   AuthTokenRequest({required this.email, required this.password});
 
