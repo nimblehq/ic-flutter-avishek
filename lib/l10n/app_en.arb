@@ -3,5 +3,8 @@
   "email": "Email",
   "password": "Password",
   "forgotPassword": "Forgot?",
-  "login": "Login"
+  "login": "Login",
+  "errorInvalidEmail": "Please enter a valid email",
+  "errorInvalidPassword": "Please enter a valid password",
+  "errorIncorrectUsernamePassword": "Your email or password is incorrect. Please try again."
 }

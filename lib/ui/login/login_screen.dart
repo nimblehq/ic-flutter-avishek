@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
 import '../../di/di.dart';
 import '../../gen/assets.gen.dart';
 import '../../usecases/login_use_case.dart';
 import '../widget/dimmed_image_background.dart';
+import '../widget/loading_indicator.dart';
 import '../widget/login_form.dart';
 import 'login_state.dart';
 import 'login_view_model.dart';
@@ -60,6 +63,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<LoginState>(loginViewModelProvider, (_, loginState) {
+      loginState.maybeWhen(
+        error: (error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  AppLocalizations.of(context)!.errorIncorrectUsernamePassword),
+            ),
+          );
+        },
+        success: () {
+          // TODO: navigate to home
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Logged in successfully!")));
+        },
+        orElse: () {},
+      );
+    });
     return _buildLoginScreen();
   }
 
@@ -115,7 +136,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               child: const LoginForm(),
             ),
           );
-        })
+        }),
+        Consumer(builder: (_, WidgetRef widgetRef, __) {
+          final loginViewModel = widgetRef.watch(loginViewModelProvider);
+          return loginViewModel.maybeWhen(
+            loading: () => const LoadingIndicator(),
+            orElse: () => const SizedBox.shrink(),
+          );
+        }),
       ]),
     );
   }
