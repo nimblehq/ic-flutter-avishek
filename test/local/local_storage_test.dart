@@ -6,19 +6,20 @@ import '../mocks/generate_mocks.mocks.dart';
 
 void main() {
   group("LocalStorage", () {
-    MockSharedPreferences mockSharedPreferences = MockSharedPreferences();
+    MockFlutterSecureStorage mockFlutterSecureStorage =
+        MockFlutterSecureStorage();
     late LocalStorage localStorage;
 
     setUp(() {
-      localStorage = LocalStorageImpl(mockSharedPreferences);
+      localStorage = LocalStorageImpl(mockFlutterSecureStorage);
     });
 
     test(
       "When there's access token in the local storage, it returns the access token",
       () async {
         var expectedAccessToken = "access_token";
-        when(mockSharedPreferences.getString(prefKeyAccessToken))
-            .thenAnswer((_) => expectedAccessToken);
+        when(mockFlutterSecureStorage.read(key: keyAccessToken))
+            .thenAnswer((_) async => expectedAccessToken);
 
         final accessToken = await localStorage.getAccessToken();
 
@@ -30,8 +31,8 @@ void main() {
       "When there's NO access token in the local storage, it returns an empty string",
       () async {
         var expectedAccessToken = "";
-        when(mockSharedPreferences.getString(prefKeyAccessToken))
-            .thenAnswer((_) => null);
+        when(mockFlutterSecureStorage.read(key: keyAccessToken))
+            .thenAnswer((_) async => null);
 
         final accessToken = await localStorage.getAccessToken();
 
@@ -43,14 +44,16 @@ void main() {
       "When saving access token in the local storage, it calls the method accordingly",
       () {
         var expectedAccessToken = "access_token";
-        when(mockSharedPreferences.setString(any, any))
-            .thenAnswer((_) async => true);
+        when(mockFlutterSecureStorage.write(
+          key: anyNamed("key"),
+          value: anyNamed("value"),
+        )).thenAnswer((_) async => true);
 
         localStorage.saveAccessToken(expectedAccessToken);
 
-        verify(mockSharedPreferences.setString(
-          prefKeyAccessToken,
-          expectedAccessToken,
+        verify(mockFlutterSecureStorage.write(
+          key: keyAccessToken,
+          value: expectedAccessToken,
         )).called(1);
       },
     );
@@ -59,8 +62,8 @@ void main() {
       "When there's refresh token in the local storage, it returns the refresh token",
       () async {
         var expectedRefreshToken = "refresh_token";
-        when(mockSharedPreferences.getString(prefKeyRefreshToken))
-            .thenAnswer((_) => expectedRefreshToken);
+        when(mockFlutterSecureStorage.read(key: keyRefreshToken))
+            .thenAnswer((_) async => expectedRefreshToken);
 
         final accessToken = await localStorage.getRefreshToken();
 
@@ -72,8 +75,8 @@ void main() {
       "When there's NO refresh token in the local storage, it returns an empty string",
       () async {
         var expectedRefreshToken = "";
-        when(mockSharedPreferences.getString(prefKeyRefreshToken))
-            .thenAnswer((_) => null);
+        when(mockFlutterSecureStorage.read(key: keyRefreshToken))
+            .thenAnswer((_) async => null);
 
         final accessToken = await localStorage.getRefreshToken();
 
@@ -85,14 +88,16 @@ void main() {
       "When saving refresh token in the local storage, it calls the method accordingly",
       () {
         var expectedRefreshToken = "refresh_token";
-        when(mockSharedPreferences.setString(any, any))
-            .thenAnswer((_) async => true);
+        when(mockFlutterSecureStorage.write(
+          key: anyNamed("key"),
+          value: anyNamed("value"),
+        )).thenAnswer((_) async => true);
 
         localStorage.saveRefreshToken(expectedRefreshToken);
 
-        verify(mockSharedPreferences.setString(
-          prefKeyRefreshToken,
-          expectedRefreshToken,
+        verify(mockFlutterSecureStorage.write(
+          key: keyRefreshToken,
+          value: expectedRefreshToken,
         )).called(1);
       },
     );
@@ -100,22 +105,25 @@ void main() {
     test(
       "When clearing the local storage, it calls the method accordingly",
       () {
-        when(mockSharedPreferences.clear()).thenAnswer((_) async => true);
+        when(mockFlutterSecureStorage.deleteAll())
+            .thenAnswer((_) async => true);
 
         localStorage.clear();
 
-        verify(mockSharedPreferences.clear()).called(1);
+        verify(mockFlutterSecureStorage.deleteAll()).called(1);
       },
     );
 
     test(
       "When checking logged in status, it returns the value accordingly",
-      () {
+      () async {
         var expectedValue = true;
-        when(mockSharedPreferences.containsKey(any))
-            .thenAnswer((_) => expectedValue);
+        when(mockFlutterSecureStorage.containsKey(key: anyNamed("key")))
+            .thenAnswer((_) async => expectedValue);
 
-        expect(localStorage.isLoggedIn, expectedValue);
+        final isLoggedIn = await localStorage.isLoggedIn;
+
+        expect(isLoggedIn, expectedValue);
       },
     );
   });
