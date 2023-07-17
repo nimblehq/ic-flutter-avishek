@@ -1,13 +1,10 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/ui/login/login_screen.dart';
 import 'package:flutter_survey/ui/widget/primary_text_form_field_decoration.dart';
 import '../../theme/app_colors.dart';
-import '../../utils/Util.dart';
-
-const _minPasswordLength = 6;
+import '../../utils/util.dart';
 
 class LoginForm extends ConsumerStatefulWidget {
   const LoginForm({super.key});
@@ -123,7 +120,9 @@ class LoginFormState extends ConsumerState<LoginForm> {
   }
 
   String? _emailValidator(String? value) {
-    if (value == null || !EmailValidator.validate(value)) {
+    var isValidEmail =
+        ref.read(loginViewModelProvider.notifier).isValidEmail(value);
+    if (!isValidEmail) {
       return AppLocalizations.of(context)!.errorInvalidEmail;
     } else {
       return null;
@@ -131,7 +130,9 @@ class LoginFormState extends ConsumerState<LoginForm> {
   }
 
   String? _passwordValidator(String? value) {
-    if (value == null || value.length < _minPasswordLength) {
+    var isValidPassword =
+        ref.read(loginViewModelProvider.notifier).isValidPassword(value);
+    if (!isValidPassword) {
       return AppLocalizations.of(context)!.errorInvalidPassword;
     } else {
       return null;

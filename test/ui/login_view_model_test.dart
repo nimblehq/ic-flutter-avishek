@@ -62,5 +62,46 @@ void main() {
           .read(loginViewModelProvider.notifier)
           .logIn('email', 'password');
     });
+
+    test('When entering a null value for email, it returns false', () {
+      expect(
+        container.read(loginViewModelProvider.notifier).isValidEmail(null),
+        false,
+      );
+    });
+
+    test('When entering an invalid email, it returns false', () {
+      expect(
+        container.read(loginViewModelProvider.notifier).isValidEmail("email"),
+        false,
+      );
+    });
+
+    test('When entering a valid email, it returns true', () {
+      expect(
+        container
+            .read(loginViewModelProvider.notifier)
+            .isValidEmail("email@example.com"),
+        true,
+      );
+    });
+
+    test('When entering an invalid password, it returns false', () {
+      expect(
+        container
+            .read(loginViewModelProvider.notifier)
+            .isValidPassword("12345"),
+        false,
+      );
+    });
+
+    test('When entering a valid password, it returns true', () {
+      expect(
+        container
+            .read(loginViewModelProvider.notifier)
+            .isValidPassword("123456"),
+        true,
+      );
+    });
   });
 }
