@@ -1,9 +1,10 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 @module
 abstract class LocalModule {
   @singleton
   @preResolve
-  Future<SharedPreferences> get sharedPref => SharedPreferences.getInstance();
+  Future<FlutterSecureStorage> get secureStorage async =>
+      const FlutterSecureStorage();
 }

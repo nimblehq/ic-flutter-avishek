@@ -1,8 +1,8 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-const String _prefKeyAccessToken = 'PREF_KEY_TOKEN';
-const String _prefKeyRefreshToken = 'PREF_KEY_REFRESH_TOKEN';
+const String _keyAccessToken = 'KEY_TOKEN';
+const String _keyRefreshToken = 'KEY_REFRESH_TOKEN';
 
 abstract class LocalStorage {
   Future<String> getAccessToken();
@@ -15,42 +15,57 @@ abstract class LocalStorage {
 
   Future<void> clear();
 
-  bool get isLoggedIn;
+  Future<bool> get isLoggedIn;
 }
 
 @LazySingleton(as: LocalStorage)
 class LocalStorageImpl implements LocalStorage {
-  late final SharedPreferences _prefs;
+  late final FlutterSecureStorage _secureStorage;
 
-  LocalStorageImpl(this._prefs);
+  LocalStorageImpl(this._secureStorage);
 
   @override
   Future<String> getAccessToken() async {
-    return _prefs.getString(_prefKeyAccessToken) ?? "";
+    final accessToken = await _secureStorage.read(key: _keyAccessToken);
+    return accessToken ?? "";
   }
 
   @override
   Future<bool> saveAccessToken(String token) async {
-    return await _prefs.setString(_prefKeyAccessToken, token);
+    try {
+      await _secureStorage.write(key: _keyAccessToken, value: token);
+    } catch (exception) {
+      return false;
+    }
+    return true;
   }
 
   @override
   Future<String> getRefreshToken() async {
-    return _prefs.getString(_prefKeyRefreshToken) ?? "";
+    final refreshToken = await _secureStorage.read(key: _keyRefreshToken);
+    return refreshToken ?? "";
   }
 
   @override
   Future<bool> saveRefreshToken(String refreshToken) async {
-    return await _prefs.setString(_prefKeyRefreshToken, refreshToken);
+    try {
+      await _secureStorage.write(
+        key: _keyRefreshToken,
+        value: refreshToken,
+      );
+    } catch (exception) {
+      return false;
+    }
+    return true;
   }
 
   @override
-  Future<void> clear() async {
-    await _prefs.clear();
+  Future<void> clear() {
+    return _secureStorage.deleteAll();
   }
 
   @override
-  bool get isLoggedIn {
-    return _prefs.containsKey(_prefKeyAccessToken);
+  Future<bool> get isLoggedIn {
+    return _secureStorage.containsKey(key: _keyAccessToken);
   }
 }

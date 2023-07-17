@@ -29,7 +29,7 @@ class LoginUseCase extends UseCase<void, LoginInput> {
             (err, stackTrace) => Failed(UseCaseException(err)));
   }
 
-  Result<dynamic> saveTokens(AuthToken authToken) {
+  Result<void> saveTokens(AuthToken authToken) {
     _localStorage.saveAccessToken(authToken.accessToken);
     _localStorage.saveRefreshToken(authToken.refreshToken);
     return Success(null);
