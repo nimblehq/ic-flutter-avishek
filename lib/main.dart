@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/di/di.dart';
 import 'package:flutter_survey/gen/assets.gen.dart';
 import 'package:flutter_survey/theme/app_theme.dart';
+import 'package:flutter_survey/ui/splash/splash_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -14,7 +16,7 @@ void main() async {
   await FlutterConfig.loadEnvVariables();
   await configureInjection();
 
-  runApp(MyApp());
+  runApp(ProviderScope(child: MyApp()));
 }
 
 const routePathRootScreen = '/';
@@ -28,7 +30,7 @@ class MyApp extends StatelessWidget {
       GoRoute(
         path: routePathRootScreen,
         builder: (BuildContext context, GoRouterState state) =>
-            const HomeScreen(),
+            const SplashScreen(),
         routes: [
           GoRoute(
             path: routePathSecondScreen,
