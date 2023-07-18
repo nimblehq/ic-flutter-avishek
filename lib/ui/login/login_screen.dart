@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../../di/di.dart';
 import '../../gen/assets.gen.dart';
+import '../../usecases/login_use_case.dart';
 import '../widget/dimmed_image_background.dart';
 import '../widget/login_form.dart';
+import 'login_state.dart';
+import 'login_view_model.dart';
 
 const _logoRevealDuration = Duration(milliseconds: 500);
 const _logoDuration = Duration(milliseconds: 750);
 const _loginFormRevealDuration = Duration(milliseconds: 700);
+
+final loginViewModelProvider =
+    StateNotifierProvider.autoDispose<LoginViewModel, LoginState>((ref) {
+  return LoginViewModel(getIt.get<LoginUseCase>());
+});
 
 final _shouldAnimateLogoPositionProvider =
     StateProvider.autoDispose<bool>((_) => false);

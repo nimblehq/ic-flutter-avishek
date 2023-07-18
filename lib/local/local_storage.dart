@@ -1,8 +1,8 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 
-const String _keyAccessToken = 'KEY_TOKEN';
-const String _keyRefreshToken = 'KEY_REFRESH_TOKEN';
+const String keyAccessToken = 'KEY_TOKEN';
+const String keyRefreshToken = 'KEY_REFRESH_TOKEN';
 
 abstract class LocalStorage {
   Future<String> getAccessToken();
@@ -26,14 +26,14 @@ class LocalStorageImpl implements LocalStorage {
 
   @override
   Future<String> getAccessToken() async {
-    final accessToken = await _secureStorage.read(key: _keyAccessToken);
+    final accessToken = await _secureStorage.read(key: keyAccessToken);
     return accessToken ?? "";
   }
 
   @override
-  Future<bool> saveAccessToken(String token) async {
+  Future<bool> saveAccessToken(String accessToken) async {
     try {
-      await _secureStorage.write(key: _keyAccessToken, value: token);
+      await _secureStorage.write(key: keyAccessToken, value: accessToken);
     } catch (exception) {
       return false;
     }
@@ -42,7 +42,7 @@ class LocalStorageImpl implements LocalStorage {
 
   @override
   Future<String> getRefreshToken() async {
-    final refreshToken = await _secureStorage.read(key: _keyRefreshToken);
+    final refreshToken = await _secureStorage.read(key: keyRefreshToken);
     return refreshToken ?? "";
   }
 
@@ -50,7 +50,7 @@ class LocalStorageImpl implements LocalStorage {
   Future<bool> saveRefreshToken(String refreshToken) async {
     try {
       await _secureStorage.write(
-        key: _keyRefreshToken,
+        key: keyRefreshToken,
         value: refreshToken,
       );
     } catch (exception) {
@@ -66,6 +66,6 @@ class LocalStorageImpl implements LocalStorage {
 
   @override
   Future<bool> get isLoggedIn {
-    return _secureStorage.containsKey(key: _keyAccessToken);
+    return _secureStorage.containsKey(key: keyAccessToken);
   }
 }
