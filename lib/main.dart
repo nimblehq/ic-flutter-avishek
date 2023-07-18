@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/di/di.dart';
 import 'package:flutter_survey/gen/assets.gen.dart';
 import 'package:flutter_survey/theme/app_theme.dart';
-import 'package:flutter_survey/ui/splash/splash_screen.dart';
+import 'package:flutter_survey/ui/login/login_screen.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
       GoRoute(
         path: routePathRootScreen,
         builder: (BuildContext context, GoRouterState state) =>
-            const SplashScreen(),
+            const LoginScreen(),
         routes: [
           GoRoute(
             path: routePathSecondScreen,

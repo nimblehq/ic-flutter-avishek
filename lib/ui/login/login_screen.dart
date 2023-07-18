@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import '../../gen/assets.gen.dart';
 import '../widget/dimmed_image_background.dart';
+import '../widget/login_form.dart';
 
 const _logoRevealDuration = Duration(milliseconds: 500);
 const _logoDuration = Duration(milliseconds: 750);
@@ -12,14 +12,14 @@ const _loginFormRevealDuration = Duration(milliseconds: 700);
 final _shouldAnimateLogoPositionProvider =
     StateProvider.autoDispose<bool>((_) => false);
 
-class SplashScreen extends ConsumerStatefulWidget {
-  const SplashScreen({super.key});
+class LoginScreen extends ConsumerStatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _SplashScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _LoginScreenState();
 }
 
-class _SplashScreenState extends ConsumerState<SplashScreen>
+class _LoginScreenState extends ConsumerState<LoginScreen>
     with TickerProviderStateMixin {
   late final AnimationController _logoRevealAnimationController =
       AnimationController(
@@ -39,12 +39,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
       }
     });
 
+  late final AnimationController _loginFormRevealAnimationController =
+      AnimationController(
+    duration: _loginFormRevealDuration,
+    vsync: this,
+  );
+  late final Animation<double> _loginFormRevealAnimation = CurvedAnimation(
+    parent: _loginFormRevealAnimationController,
+    curve: Curves.easeIn,
+  );
+
   @override
   Widget build(BuildContext context) {
-    return _buildSplashScreen();
+    return _buildLoginScreen();
   }
 
-  Widget _buildSplashScreen() {
+  Widget _buildLoginScreen() {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(children: [
@@ -82,7 +92,21 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               ),
             );
           },
-        )
+        ),
+        Consumer(builder: (_, widgetRef, __) {
+          final shouldRevealLoginForm =
+              widgetRef.watch(_shouldAnimateLogoPositionProvider);
+          if (shouldRevealLoginForm) {
+            _loginFormRevealAnimationController.forward();
+          }
+          return Padding(
+            padding: const EdgeInsets.all(24),
+            child: FadeTransition(
+              opacity: _loginFormRevealAnimation,
+              child: const LoginForm(),
+            ),
+          );
+        })
       ]),
     );
   }
