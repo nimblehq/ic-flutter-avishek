@@ -22,6 +22,9 @@ class Failed<T> extends Result<T> {
   Failed(this.exception) : super._();
 
   String? getErrorMessage() {
+    if (exception.actualException is! NetworkExceptions) {
+      return exception.actualException.message;
+    }
     return NetworkExceptions.getErrorMessage(exception.actualException);
   }
 }
