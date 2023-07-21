@@ -44,7 +44,6 @@ dependencies:
   email_validator: ^2.1.17
   japx: ^2.1.0
   cached_network_image: ^3.2.3
-  clock: ^1.1.1
   page_view_indicators: ^2.0.0
 
 dev_dependencies:

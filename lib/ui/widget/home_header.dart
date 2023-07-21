@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:clock/clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,7 +16,7 @@ class HomeHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          clock.now().toFormattedFullDayMonthYear().toUpperCase(),
+          DateTime.now().toFormattedFullDayMonthYear().toUpperCase(),
           style: Theme.of(context).textTheme.titleSmall,
         ),
         const SizedBox(height: 5.0),

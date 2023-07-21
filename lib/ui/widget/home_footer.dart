@@ -31,23 +31,16 @@ class HomeFooter extends StatelessWidget {
             const Expanded(
               child: SizedBox.shrink(),
             ),
-            GestureDetector(
+            RawMaterialButton(
               key: HomeScreenKey.btStartSurvey,
-              onTap: () => {
+              onPressed: () {
                 //TODO: navigate to the survey details screen.
               },
-              child: ClipOval(
-                child: Material(
-                  color: Colors.white,
-                  child: SizedBox(
-                    width: 56,
-                    height: 56,
-                    child: Assets.icons.icArrowRight.svg(
-                      fit: BoxFit.none,
-                    ),
-                  ),
-                ),
-              ),
+              elevation: 0,
+              fillColor: Colors.white,
+              padding: const EdgeInsets.all(15),
+              shape: const CircleBorder(),
+              child: Assets.icons.icArrowRight.svg(),
             ),
           ],
         ),
