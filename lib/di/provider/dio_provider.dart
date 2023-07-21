@@ -9,14 +9,20 @@ const String defaultContentType = 'application/json; charset=utf-8';
 
 @LazySingleton()
 class DioProvider {
-  Dio? _dio;
+  Dio? _unauthenticatedDio;
+  Dio? _authenticatedDio;
   final LocalStorage _localStorage;
 
   DioProvider(this._localStorage);
 
-  Dio getDio() {
-    _dio ??= _createDio();
-    return _dio!;
+  Dio getUnAuthenticatedDio() {
+    _unauthenticatedDio ??= _createDio();
+    return _unauthenticatedDio!;
+  }
+
+  Dio getAuthenticatedDio() {
+    _authenticatedDio ??= _createDio(requireAuthenticate: true);
+    return _authenticatedDio!;
   }
 
   Dio _createDio({bool requireAuthenticate = false}) {
