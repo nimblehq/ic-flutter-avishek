@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../home/home_screen.dart';
 import '../home/survey_ui_model.dart';
 import 'dimmed_image_background.dart';
 
@@ -17,6 +18,9 @@ class HomePageView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen<AsyncValue<int>>(surveyPageIndexStreamProvider, (_, pageIndex) {
+      _pageController.jumpToPage(pageIndex.value ?? 0);
+    });
     return PageView.builder(
       itemCount: surveyUiModels.length,
       controller: _pageController,

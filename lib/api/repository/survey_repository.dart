@@ -22,7 +22,7 @@ class SurveyRepositoryImpl extends SurveyRepository {
         pageSize,
       );
       final surveys =
-          response.map((e) => Survey.fromSurveyResponse(e)).toList();
+          response.data.map((e) => Survey.fromSurveyResponse(e)).toList();
       return surveys;
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
