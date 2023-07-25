@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_survey/model/survey.dart';
 
-class SurveyUiModel {
+class SurveyUiModel extends Equatable {
   final String id;
   final String title;
   final String description;
@@ -21,4 +22,7 @@ class SurveyUiModel {
       coverImageUrl: survey.coverImageUrl,
     );
   }
+
+  @override
+  List<Object?> get props => [id, title, description, coverImageUrl];
 }
