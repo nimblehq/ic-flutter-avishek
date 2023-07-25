@@ -11,4 +11,6 @@ class LoginState with _$LoginState {
   const factory LoginState.error(String? error) = _Error;
 
   const factory LoginState.success() = _Success;
+
+  const factory LoginState.loggedOut() = _LoggedOut;
 }

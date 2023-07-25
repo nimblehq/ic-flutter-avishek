@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/di/di.dart';
 import 'package:flutter_survey/theme/app_theme.dart';
 import 'package:flutter_survey/ui/home/home_screen.dart';
+import 'package:flutter_survey/ui/login/login_screen.dart';
 import 'package:go_router/go_router.dart';
 
 void main() async {
@@ -16,7 +17,7 @@ void main() async {
 }
 
 const routePathRootScreen = '/';
-const routePathSecondScreen = 'second';
+const routePathHomeScreen = 'home';
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
@@ -26,12 +27,12 @@ class MyApp extends StatelessWidget {
       GoRoute(
         path: routePathRootScreen,
         builder: (BuildContext context, GoRouterState state) =>
-            const HomeScreen(),
+            const LoginScreen(),
         routes: [
           GoRoute(
-            path: routePathSecondScreen,
+            path: routePathHomeScreen,
             builder: (BuildContext context, GoRouterState state) =>
-                const SecondScreen(),
+                const HomeScreen(),
           ),
         ],
       ),
@@ -48,21 +49,6 @@ class MyApp extends StatelessWidget {
       routeInformationProvider: _router.routeInformationProvider,
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,
-    );
-  }
-}
-
-class SecondScreen extends StatelessWidget {
-  const SecondScreen({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Second Screen"),
-      ),
     );
   }
 }

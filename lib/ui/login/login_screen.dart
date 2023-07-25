@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_survey/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../di/di.dart';
 import '../../gen/assets.gen.dart';
+import '../../usecases/is_logged_in_use_case.dart';
 import '../../usecases/login_use_case.dart';
 import '../widget/dimmed_image_background.dart';
 import '../widget/loading_indicator.dart';
@@ -18,7 +21,10 @@ const _loginFormRevealDuration = Duration(milliseconds: 700);
 
 final loginViewModelProvider =
     StateNotifierProvider.autoDispose<LoginViewModel, LoginState>((ref) {
-  return LoginViewModel(getIt.get<LoginUseCase>());
+  return LoginViewModel(
+    getIt.get<IsLoggedInUseCase>(),
+    getIt.get<LoginUseCase>(),
+  );
 });
 
 final _shouldAnimateLogoPositionProvider =
@@ -82,13 +88,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           );
         },
         success: () {
-          // TODO: navigate to home
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Logged in successfully!")));
+          context.replace('/$routePathHomeScreen');
         },
         orElse: () {},
       );
     });
+    ref.read(loginViewModelProvider.notifier).checkIfLoggedIn();
     return _buildLoginScreen();
   }
 

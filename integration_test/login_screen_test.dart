@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_survey/main.dart';
+import 'package:flutter_survey/ui/home/home_screen.dart';
 import 'package:flutter_survey/ui/login/login_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -61,7 +64,14 @@ void main() {
         "When logging with valid email and password, it shows the success message",
         (WidgetTester tester) async {
       FakeData.addSuccessResponse(loginKey, loginJson);
-      await tester.pumpWidget(TestUtil.prepareTestApp(const LoginScreen()));
+      await tester.pumpWidget(
+        TestUtil.prepareTestApp(
+          const LoginScreen(),
+          routes: <String, WidgetBuilder>{
+            routePathHomeScreen: (BuildContext context) => const HomeScreen()
+          },
+        ),
+      );
 
       await tester.pumpAndSettle();
       await tester.enterText(tfEmail, 'test@abc.com');
@@ -69,7 +79,7 @@ void main() {
       await tester.tap(btLogin);
 
       await tester.pumpAndSettle();
-      expect(find.text('Logged in successfully!'), findsOneWidget);
+      expect(find.byType(HomeScreen), findsOneWidget);
     });
   });
 }
