@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/theme/app_colors.dart';
 import 'package:flutter_survey/ui/home/survey_ui_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_survey/ui/widget/skeleton_loading_screen.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 
 import '../../di/di.dart';
@@ -56,10 +57,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
     final uiModels = ref.watch(_surveysStreamProvider).value ?? [];
     return ref.watch(homeViewModelProvider).when(
           init: () => const Center(
-            // TODO: replace CircularProgressIndicator with the shimmer effect.
-            child: CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation(Colors.white),
-            ),
+            child: SkeletonLoadingScreen(),
           ),
           loading: () => _buildHomeScreen(uiModels, true),
           success: () => _buildHomeScreen(uiModels, false),
