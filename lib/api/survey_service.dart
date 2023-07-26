@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../model/response/survey_list_response.dart';
-import '../model/response/survey_response.dart';
 
 part 'survey_service.g.dart';
 

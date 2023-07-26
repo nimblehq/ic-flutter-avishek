@@ -1,12 +1,8 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_survey/main.dart';
 import 'package:flutter_survey/ui/home/home_screen.dart';
-import 'package:flutter_survey/ui/login/login_screen.dart';
 import 'package:flutter_survey/utils/extension/date_time_ext.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
-import 'fake/fake_authentication_service.dart';
 import 'fake/fake_data.dart';
 import 'fake/fake_survey_service.dart';
 import 'utils/file_util.dart';
