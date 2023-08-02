@@ -1,6 +1,6 @@
 # Survey
 
-[![codecov](https://codecov.io/gh/nimblehq/ic-flutter-avishek/branch/main/graph/badge.svg?token=ATUNXDX218)](https://codecov.io/gh/nimblehq/ic-flutter-avishek)
+[![codecov](https://codecov.io/gh/nimblehq/ic-flutter-avishek/branch/main/graph/badge.svg?token=Z33cT2tdxH)](https://codecov.io/gh/nimblehq/ic-flutter-avishek)
 
 All the templates that can be used to kick off a new Flutter application quickly.
 

@@ -1,13 +1,19 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_survey/local/local_storage.dart';
+
+const String _authorizationHeader = "Authorization";
+const String _tokenType = "Bearer";
 
 class AppInterceptor extends Interceptor {
   final bool _requireAuthenticate;
+  final LocalStorage _localStorage;
   final Dio _dio;
 
   AppInterceptor(
     this._requireAuthenticate,
+    this._localStorage,
     this._dio,
   );
 
@@ -15,9 +21,9 @@ class AppInterceptor extends Interceptor {
   Future onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     if (_requireAuthenticate) {
-      // TODO header authorization here
-      // options.headers
-      //     .putIfAbsent(HEADER_AUTHORIZATION, () => "");
+      final accessToken = await _localStorage.getAccessToken();
+      final header = "$_tokenType $accessToken";
+      options.headers.putIfAbsent(_authorizationHeader, () => header);
     }
     return super.onRequest(options, handler);
   }

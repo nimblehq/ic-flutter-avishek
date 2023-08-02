@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_survey/main.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+
 import '../../di/di.dart';
 import '../../gen/assets.gen.dart';
+import '../../usecases/is_logged_in_use_case.dart';
 import '../../usecases/login_use_case.dart';
 import '../widget/dimmed_image_background.dart';
+import '../widget/loading_indicator.dart';
 import '../widget/login_form.dart';
 import 'login_state.dart';
 import 'login_view_model.dart';
@@ -15,11 +21,22 @@ const _loginFormRevealDuration = Duration(milliseconds: 700);
 
 final loginViewModelProvider =
     StateNotifierProvider.autoDispose<LoginViewModel, LoginState>((ref) {
-  return LoginViewModel(getIt.get<LoginUseCase>());
+  return LoginViewModel(
+    getIt.get<IsLoggedInUseCase>(),
+    getIt.get<LoginUseCase>(),
+  );
 });
 
 final _shouldAnimateLogoPositionProvider =
     StateProvider.autoDispose<bool>((_) => false);
+
+class LoginScreenKey {
+  LoginScreenKey._();
+
+  static const tfEmail = Key('tfLoginEmail');
+  static const tfPassword = Key('tfLoginPassword');
+  static const btLogin = Key('btLogin');
+}
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -60,6 +77,23 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<LoginState>(loginViewModelProvider, (_, loginState) {
+      loginState.maybeWhen(
+        error: (error) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  AppLocalizations.of(context)!.errorIncorrectUsernamePassword),
+            ),
+          );
+        },
+        success: () {
+          context.replace('/$routePathHomeScreen');
+        },
+        orElse: () {},
+      );
+    });
+    ref.read(loginViewModelProvider.notifier).checkIfLoggedIn();
     return _buildLoginScreen();
   }
 
@@ -115,7 +149,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
               child: const LoginForm(),
             ),
           );
-        })
+        }),
+        Consumer(builder: (_, WidgetRef widgetRef, __) {
+          final loginViewModel = widgetRef.watch(loginViewModelProvider);
+          return loginViewModel.maybeWhen(
+            loading: () => const LoadingIndicator(),
+            orElse: () => const SizedBox.shrink(),
+          );
+        }),
       ]),
     );
   }
