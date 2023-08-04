@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/ui/home/survey_ui_model.dart';
 import 'package:rxdart/subjects.dart';
@@ -31,28 +33,35 @@ class HomeViewModel extends StateNotifier<HomeState> {
 
   Stream<int> get surveyPageIndexStream => _surveyPageIndexSubject.stream;
 
-  void loadSurveys({bool shouldRefresh = false}) async {
+  StreamSubscription<Result<List<Survey>>>? streamSubscription;
+
+  void loadSurveys({bool shouldRefresh = false, bool shouldLoadMore = false}) {
+    streamSubscription?.cancel();
     if (shouldRefresh) {
       _page = 1;
       _surveyPageIndexSubject.add(0);
     }
-    final result = await _getSurveysUseCase.call(GetSurveysInput(
+    streamSubscription = _getSurveysUseCase
+        .call(GetSurveysInput(
       pageNumber: _page,
       pageSize: _defaultPageSize,
-    ));
-    if (result is Success<List<Survey>>) {
-      final uiModels = result.value
-          .map((survey) => SurveyUiModel.fromSurvey(survey))
-          .toList();
-      if (_surveysSubject.hasValue && !shouldRefresh) {
-        _surveysSubject.add(_surveysSubject.value + uiModels);
+      shouldRefresh: shouldRefresh,
+    ))
+        .listen((result) {
+      if (result is Success<List<Survey>>) {
+        final uiModels = result.value
+            .map((survey) => SurveyUiModel.fromSurvey(survey))
+            .toList();
+        if (_surveysSubject.hasValue && shouldLoadMore) {
+          _surveysSubject.add(_surveysSubject.value + uiModels);
+        } else {
+          _surveysSubject.add(uiModels);
+        }
+        state = const HomeState.success();
       } else {
-        _surveysSubject.add(uiModels);
+        _handleError(result as Failed);
       }
-      state = const HomeState.success();
-    } else {
-      _handleError(result as Failed);
-    }
+    });
   }
 
   void loadMoreSurveys(int selectedIndex) {
@@ -65,7 +74,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
     }
     _page = selectedIndex + 1;
     _lastSelectedIndex = selectedIndex;
-    loadSurveys();
+    loadSurveys(shouldLoadMore: true);
   }
 
   _handleError(Failed result) {

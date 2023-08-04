@@ -1,4 +1,5 @@
 import 'package:flutter_survey/local/local_storage.dart';
+import 'package:flutter_survey/model/survey.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -8,10 +9,11 @@ void main() {
   group("LocalStorage", () {
     MockFlutterSecureStorage mockFlutterSecureStorage =
         MockFlutterSecureStorage();
+    MockBox mockSurveyBox = MockBox();
     late LocalStorage localStorage;
 
     setUp(() {
-      localStorage = LocalStorageImpl(mockFlutterSecureStorage);
+      localStorage = LocalStorageImpl(mockFlutterSecureStorage, mockSurveyBox);
     });
 
     test(
@@ -124,6 +126,48 @@ void main() {
         final isLoggedIn = await localStorage.isLoggedIn;
 
         expect(isLoggedIn, expectedValue);
+      },
+    );
+
+    test(
+      "When there are cached surveys, it returns the value accordingly",
+      () async {
+        final expectedValue = [];
+        when(mockSurveyBox.get(any, defaultValue: anyNamed("defaultValue")))
+            .thenAnswer((_) => expectedValue);
+
+        final cachedSurveys = await localStorage.surveys;
+
+        expect(cachedSurveys, expectedValue);
+      },
+    );
+
+    test(
+      "When caching surveys successfully, it calls the methods accordingly",
+      () async {
+        final surveys = [
+          const Survey(
+            id: "1",
+            title: "title",
+            description: "description",
+            coverImageUrl: "coverImageUrl",
+          )
+        ];
+        when(mockSurveyBox.get(any, defaultValue: anyNamed("defaultValue")))
+            .thenAnswer((_) => surveys);
+
+        await localStorage.cacheSurveys(surveys);
+
+        verify(mockSurveyBox.put(any, any)).called(1);
+      },
+    );
+
+    test(
+      "When clearing cached surveys, it calls the methods accordingly",
+      () async {
+        await localStorage.clearCachedSurveys();
+
+        verify(mockSurveyBox.delete(any)).called(1);
       },
     );
   });

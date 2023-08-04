@@ -46,8 +46,9 @@ void main() {
     setUp(() {
       mockGetSurveysUseCase = MockGetSurveysUseCase();
 
-      when(mockGetSurveysUseCase.call(any))
-          .thenAnswer((_) async => Success(surveys));
+      when(mockGetSurveysUseCase.call(any)).thenAnswer((_) async* {
+        yield Success(surveys);
+      });
 
       container = ProviderContainer(
         overrides: [
@@ -81,7 +82,9 @@ void main() {
       final surveysStream =
           container.read(homeViewModelProvider.notifier).surveysStream;
 
-      container.read(homeViewModelProvider.notifier).loadSurveys();
+      container
+          .read(homeViewModelProvider.notifier)
+          .loadSurveys(shouldLoadMore: true);
 
       expect(
         surveysStream,
@@ -117,8 +120,9 @@ void main() {
       'When loading surveys runs into an error, it emits values accordingly',
       () {
         const mockErrorMessage = "errorMessage";
-        when(mockGetSurveysUseCase.call(any)).thenAnswer(
-            (_) async => Failed(UseCaseException(Exception(mockErrorMessage))));
+        when(mockGetSurveysUseCase.call(any)).thenAnswer((_) async* {
+          yield Failed(UseCaseException(Exception(mockErrorMessage)));
+        });
         final stateStream =
             container.read(homeViewModelProvider.notifier).stream;
 

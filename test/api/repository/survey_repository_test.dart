@@ -15,39 +15,81 @@ void main() {
     'CLIENT_SECRET': 'CLIENT_SECRET',
   });
 
+  final surveyResponses =
+      SurveyListResponse(data: [SurveyResponse(id: "1234")]);
+  final surveys =
+      surveyResponses.data.map((e) => Survey.fromSurveyResponse(e)).toList();
+
   group("SurveyRepository", () {
     MockSurveyService mockSurveyService = MockSurveyService();
+    MockLocalStorage mockLocalStorage = MockLocalStorage();
     late SurveyRepository surveyRepository;
 
     setUp(() {
-      surveyRepository = SurveyRepositoryImpl(mockSurveyService);
+      when(mockLocalStorage.surveys).thenAnswer((_) async => surveys);
+      when(mockSurveyService.getSurveys(any, any))
+          .thenAnswer((_) async => surveyResponses);
+
+      surveyRepository =
+          SurveyRepositoryImpl(mockSurveyService, mockLocalStorage);
     });
 
     test(
         "When fetching the surveys successfully, it emits the corresponding value",
         () async {
-      final surveyResponses =
-          SurveyListResponse(data: [SurveyResponse(id: "1234")]);
-      final expectedValue = surveyResponses.data
-          .map((e) => Survey.fromSurveyResponse(e))
-          .toList();
+      expect(
+        surveyRepository.getSurveys(1, 5, false),
+        emitsInOrder([
+          surveys,
+          surveys,
+        ]),
+      );
+    });
 
-      when(mockSurveyService.getSurveys(any, any))
-          .thenAnswer((_) async => surveyResponses);
+    test(
+        "When fetching the surveys for the first time successfully, it emits the corresponding value",
+        () async {
+      expect(
+        surveyRepository.getSurveys(1, 5, false),
+        emitsInOrder([
+          surveys,
+          surveys,
+        ]),
+      );
+      verify(mockLocalStorage.clearCachedSurveys()).called(1);
+    });
 
-      final result = await surveyRepository.getSurveys(1, 5);
+    test(
+        "When refreshing the surveys successfully, it emits the corresponding value",
+        () async {
+      expect(
+        surveyRepository.getSurveys(1, 5, true),
+        emitsInOrder([
+          surveys,
+        ]),
+      );
+    });
 
-      expect(result, expectedValue);
+    test(
+        "When fetching more surveys successfully, it emits the corresponding value",
+        () async {
+      expect(
+        surveyRepository.getSurveys(2, 5, false),
+        emitsInOrder([
+          surveys,
+        ]),
+      );
     });
 
     test("When fetching the surveys fails, it emits the corresponding error",
         () async {
+      when(mockLocalStorage.surveys).thenAnswer((_) async => []);
       when(mockSurveyService.getSurveys(any, any))
           .thenThrow(MockDioException());
 
-      result() => surveyRepository.getSurveys(1, 5);
-
-      expect(result, throwsA(isA<NetworkExceptions>()));
+      surveyRepository.getSurveys(1, 5, false).listen((result) {
+        expect(result, isA<NetworkExceptions>());
+      });
     });
   });
 }

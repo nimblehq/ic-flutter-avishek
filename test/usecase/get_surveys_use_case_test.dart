@@ -20,32 +20,37 @@ void main() {
     test("When calling the use case successfully, it returns Success",
         () async {
       when(
-        mockMockSurveyRepository.getSurveys(1, 5),
-      ).thenAnswer((_) async => [
-            const Survey(
-                id: "1234",
-                title: "title",
-                description: "description",
-                coverImageUrl: "coverImageUrl")
-          ]);
+        mockMockSurveyRepository.getSurveys(1, 5, false),
+      ).thenAnswer((_) async* {
+        [
+          const Survey(
+              id: "1234",
+              title: "title",
+              description: "description",
+              coverImageUrl: "coverImageUrl")
+        ];
+      });
 
-      final result = await getSurveysUseCase
-          .call(GetSurveysInput(pageNumber: 1, pageSize: 5));
-
-      expect(result, isA<Success>());
+      getSurveysUseCase
+          .call(GetSurveysInput(pageNumber: 1, pageSize: 5))
+          .listen((result) {
+        expect(result, isA<Success>());
+      });
     });
 
     test("When calling the use case unsuccessfully, it returns Failed",
         () async {
       when(
-        mockMockSurveyRepository.getSurveys(1, 5),
-      ).thenAnswer((_) =>
-          Future.error(NetworkExceptions.fromDioException(MockDioException())));
+        mockMockSurveyRepository.getSurveys(1, 5, false),
+      ).thenAnswer((_) async* {
+        throw NetworkExceptions.fromDioException(MockDioException());
+      });
 
-      final result = await getSurveysUseCase
-          .call(GetSurveysInput(pageNumber: 1, pageSize: 5));
-
-      expect(result, isA<Failed>());
+      getSurveysUseCase
+          .call(GetSurveysInput(pageNumber: 1, pageSize: 5))
+          .listen((result) {
+        expect(result, isA<Failed>());
+      });
     });
   });
 }

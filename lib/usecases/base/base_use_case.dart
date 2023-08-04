@@ -17,3 +17,9 @@ abstract class NoParamsUseCase<T> extends BaseUseCase<Result<T>> {
 
   Future<Result<T>> call();
 }
+
+abstract class StreamUseCase<T, P> extends BaseUseCase<Result<T>> {
+  const StreamUseCase() : super();
+
+  Stream<Result<T>> call(P params);
+}
