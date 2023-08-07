@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../local/local_storage.dart';
 import '../../model/survey.dart';
+import '../../model/survey_detail.dart';
 import '../exception/network_exceptions.dart';
 import '../survey_service.dart';
 
@@ -13,6 +14,8 @@ abstract class SurveyRepository {
     int pageSize,
     bool shouldRefresh,
   );
+
+  Future<SurveyDetail> getSurveyDetail(String surveyId);
 }
 
 @LazySingleton(as: SurveyRepository)
@@ -74,5 +77,15 @@ class SurveyRepositoryImpl extends SurveyRepository {
       _localStorage.clearCachedSurveys();
     }
     _localStorage.cacheSurveys(surveys);
+  }
+
+  @override
+  Future<SurveyDetail> getSurveyDetail(String surveyId) async {
+    try {
+      final response = await _surveyService.getSurveyDetail(surveyId);
+      return SurveyDetail.fromSurveyDetailResponse(response);
+    } catch (exception) {
+      throw NetworkExceptions.fromDioException(exception);
+    }
   }
 }
