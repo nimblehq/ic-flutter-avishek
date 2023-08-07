@@ -83,7 +83,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
         color: AppColors.blackRussian,
         onRefresh: () async {
           ref
-              .watch(homeViewModelProvider.notifier)
+              .read(homeViewModelProvider.notifier)
               .loadSurveys(shouldRefresh: true);
         },
         child: Stack(
