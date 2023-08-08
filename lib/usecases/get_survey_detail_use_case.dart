@@ -13,7 +13,7 @@ class GetSurveyDetailInput {
   });
 }
 
-@Injectable()
+@lazySingleton
 class GetSurveyDetailUseCase
     extends UseCase<SurveyDetail, GetSurveyDetailInput> {
   final SurveyRepository _surveyRepository;

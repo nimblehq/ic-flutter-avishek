@@ -27,7 +27,7 @@ abstract class SurveyService extends BaseSurveyService {
   );
 
   @override
-  @GET('/v1/surveys/{surveyId}')
+  @GET('api/v1/surveys/{surveyId}')
   Future<SurveyDetailResponse> getSurveyDetail(
     @Path('surveyId') String surveyId,
   );
