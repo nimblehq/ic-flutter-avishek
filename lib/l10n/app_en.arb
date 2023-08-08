@@ -9,5 +9,6 @@
   "errorIncorrectUsernamePassword": "Your email or password is incorrect. Please try again.",
   "errorGeneric": "Something went wrong. Please try again later.",
   "logout": "Log out",
-  "today": "TODAY"
+  "today": "TODAY",
+  "startSurvey": "Start Survey"
 }
