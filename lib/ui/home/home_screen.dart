@@ -56,9 +56,7 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final uiModels = ref.watch(_surveysStreamProvider).value ?? [];
     return ref.watch(homeViewModelProvider).when(
-          init: () => const Center(
-            child: SkeletonLoadingScreen(),
-          ),
+          init: () => const SkeletonLoadingScreen(),
           loading: () => _buildHomeScreen(uiModels, true),
           success: () => _buildHomeScreen(uiModels, false),
           error: (message) {
