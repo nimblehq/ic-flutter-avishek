@@ -1,9 +1,10 @@
 name: ios-deploy-to-staging
-on:
-  # Trigger the workflow on push action
-  push:
-    branches:
-      - develop
+#Uncomment the trigger once the iOS deployment is set up.
+#on:
+#  # Trigger the workflow on push action
+#  push:
+#    branches:
+#      - develop
 
 jobs:
   build_and_upload_staging_app_to_firebase:
