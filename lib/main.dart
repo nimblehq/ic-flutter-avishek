@@ -5,7 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/di/di.dart';
 import 'package:flutter_survey/theme/app_theme.dart';
 import 'package:flutter_survey/ui/home/home_screen.dart';
+import 'package:flutter_survey/ui/home/survey_ui_model.dart';
 import 'package:flutter_survey/ui/login/login_screen.dart';
+import 'package:flutter_survey/ui/surveydetail/survey_detail_screen.dart';
+import 'package:flutter_survey/utils/util.dart';
 import 'package:go_router/go_router.dart';
 
 import 'local/hive.dart';
@@ -21,6 +24,7 @@ void main() async {
 
 const routePathRootScreen = '/';
 const routePathHomeScreen = 'home';
+const routePathSurveyDetailScreen = 'survey-detail';
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
@@ -36,6 +40,22 @@ class MyApp extends StatelessWidget {
             path: routePathHomeScreen,
             builder: (BuildContext context, GoRouterState state) =>
                 const HomeScreen(),
+          ),
+          GoRoute(
+            path: routePathSurveyDetailScreen,
+            name: routePathSurveyDetailScreen,
+            builder: (BuildContext context, GoRouterState state) {
+              final surveyUiModel = state.extra as SurveyUiModel;
+              return SurveyDetailScreen(surveyUiModel: surveyUiModel);
+            },
+            pageBuilder: (BuildContext context, GoRouterState state) {
+              final surveyUiModel = state.extra as SurveyUiModel;
+              return Util.buildPageWithDefaultTransition<void>(
+                context: context,
+                state: state,
+                child: SurveyDetailScreen(surveyUiModel: surveyUiModel),
+              );
+            },
           ),
         ],
       ),

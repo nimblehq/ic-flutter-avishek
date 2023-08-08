@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../gen/assets.gen.dart';
+import '../../main.dart';
 import '../home/home_screen.dart';
 import '../home/survey_ui_model.dart';
 
@@ -34,7 +36,10 @@ class HomeFooter extends StatelessWidget {
             RawMaterialButton(
               key: HomeScreenKey.btStartSurvey,
               onPressed: () {
-                //TODO: navigate to the survey details screen.
+                context.pushNamed(
+                  routePathSurveyDetailScreen,
+                  extra: survey,
+                );
               },
               elevation: 0,
               fillColor: Colors.white,

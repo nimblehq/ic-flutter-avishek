@@ -37,7 +37,7 @@ class HomePageView extends ConsumerWidget {
     return Stack(
       children: [
         DimmedImageBackground(
-          image: Image.network(survey.coverImageUrl).image,
+          image: Image.network(survey.largeCoverImageUrl).image,
         ),
       ],
     );
