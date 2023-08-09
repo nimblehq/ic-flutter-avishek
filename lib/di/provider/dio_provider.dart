@@ -15,7 +15,7 @@ class DioProvider {
 
   DioProvider(this._localStorage);
 
-  Dio getUnAuthenticatedDio() {
+  Dio getUnauthenticatedDio() {
     _unauthenticatedDio ??= _createDio();
     return _unauthenticatedDio!;
   }

@@ -10,7 +10,7 @@ abstract class NetworkModule {
   @LazySingleton()
   AuthenticationService provideAuthenticationService(DioProvider dioProvider) {
     return AuthenticationService(
-      dioProvider.getUnAuthenticatedDio(),
+      dioProvider.getUnauthenticatedDio(),
       baseUrl: Env.restApiEndpoint,
     );
   }
