@@ -20,7 +20,7 @@ class SkeletonLoadingScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildHeaderSkeleton(screenWidth),
+              _buildHeaderSkeleton(screenWidth),
               const Expanded(child: SizedBox.shrink()),
               _buildSkeleton(width: screenWidth / 6),
               const SizedBox(height: 18),
@@ -39,7 +39,7 @@ class SkeletonLoadingScreen extends StatelessWidget {
     );
   }
 
-  Row buildHeaderSkeleton(double screenWidth) {
+  Row _buildHeaderSkeleton(double screenWidth) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
