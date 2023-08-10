@@ -69,34 +69,28 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        _zoomOutAndPop();
-        return false;
-      },
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: ref.watch(surveyDetailViewModelProvider).when(
-              init: () => const SizedBox.shrink(),
-              loading: () => _buildSurveyScreen(widget.surveyUiModel, true),
-              success: () => _buildSurveyScreen(widget.surveyUiModel, false),
-              error: (message) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(message ??
-                          AppLocalizations.of(context)!.errorGeneric)));
-                });
-                return _buildSurveyScreen(widget.surveyUiModel, false);
-              },
-            ),
-      ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: ref.watch(surveyDetailViewModelProvider).when(
+            init: () => const SizedBox.shrink(),
+            loading: () => _buildSurveyScreen(widget.surveyUiModel, true),
+            success: () => _buildSurveyScreen(widget.surveyUiModel, false),
+            error: (message) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(message ??
+                        AppLocalizations.of(context)!.errorGeneric)));
+              });
+              return _buildSurveyScreen(widget.surveyUiModel, false);
+            },
+          ),
     );
   }
 
   Widget _buildSurveyScreen(SurveyUiModel? survey, bool isLoading) {
     Future.delayed(Duration.zero, () {
       final shouldZoomInBackground =
-      ref.watch(shouldZoomInBackgroundProvider.notifier);
+          ref.watch(shouldZoomInBackgroundProvider.notifier);
       shouldZoomInBackground.state = true;
     });
     return survey != null
@@ -133,7 +127,7 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
     pages.add(
       SurveyIntro(
         survey: survey,
-        onNext: () => _gotoNextPage(),
+        onNext: _gotoNextPage,
         onClose: _zoomOutAndPop,
       ),
     );

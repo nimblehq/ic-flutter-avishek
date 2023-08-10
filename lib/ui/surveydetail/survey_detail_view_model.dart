@@ -28,7 +28,8 @@ class SurveyDetailViewModel extends StateNotifier<SurveyDetailState> {
     ));
     if (result is Success<SurveyDetail>) {
       final surveyDetail = result.value;
-      _surveySubject.add(SurveyUiModel.fromSurveyDetail(surveyUiModel, surveyDetail));
+      _surveySubject
+          .add(SurveyUiModel.fromSurveyDetail(surveyUiModel, surveyDetail));
       state = const SurveyDetailState.success();
     } else {
       _handleError(result as Failed);
