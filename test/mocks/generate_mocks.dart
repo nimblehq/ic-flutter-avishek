@@ -9,6 +9,7 @@ import 'package:flutter_survey/usecases/base/base_use_case.dart';
 import 'package:flutter_survey/usecases/get_surveys_use_case.dart';
 import 'package:flutter_survey/usecases/is_logged_in_use_case.dart';
 import 'package:flutter_survey/usecases/login_use_case.dart';
+import 'package:hive/hive.dart';
 import 'package:mockito/annotations.dart';
 
 @GenerateMocks([
@@ -17,6 +18,7 @@ import 'package:mockito/annotations.dart';
   SurveyService,
   LocalStorage,
   FlutterSecureStorage,
+  Box,
   AuthenticationRepository,
   SurveyRepository,
   IsLoggedInUseCase,

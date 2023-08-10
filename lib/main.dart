@@ -8,9 +8,12 @@ import 'package:flutter_survey/ui/home/home_screen.dart';
 import 'package:flutter_survey/ui/login/login_screen.dart';
 import 'package:go_router/go_router.dart';
 
+import 'local/hive.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
+  await initHive();
   await configureInjection();
 
   runApp(ProviderScope(child: MyApp()));

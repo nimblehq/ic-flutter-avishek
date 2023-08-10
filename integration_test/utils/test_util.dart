@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/api/authentication_service.dart';
 import 'package:flutter_survey/di/di.dart';
+import 'package:flutter_survey/local/hive.dart';
 import 'package:flutter_survey/main.dart';
 import 'package:flutter_survey/theme/app_theme.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -61,6 +62,7 @@ class TestUtil {
       'CLIENT_SECRET': 'CLIENT_SECRET',
     });
 
+    await initHive();
     await configureInjection();
 
     getIt.allowReassignment = true;
