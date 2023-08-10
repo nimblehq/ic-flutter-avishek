@@ -1,6 +1,7 @@
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_survey/api/exception/network_exceptions.dart';
 import 'package:flutter_survey/api/repository/survey_repository.dart';
+import 'package:flutter_survey/model/response/survey_list_response.dart';
 import 'package:flutter_survey/model/response/survey_response.dart';
 import 'package:flutter_survey/model/survey.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -25,9 +26,11 @@ void main() {
     test(
         "When fetching the surveys successfully, it emits the corresponding value",
         () async {
-      final surveyResponses = [SurveyResponse(id: "1234")];
-      final expectedValue =
-          surveyResponses.map((e) => Survey.fromSurveyResponse(e)).toList();
+      final surveyResponses =
+          SurveyListResponse(data: [SurveyResponse(id: "1234")]);
+      final expectedValue = surveyResponses.data
+          .map((e) => Survey.fromSurveyResponse(e))
+          .toList();
 
       when(mockSurveyService.getSurveys(any, any))
           .thenAnswer((_) async => surveyResponses);

@@ -2,12 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/theme/app_colors.dart';
 import 'package:flutter_survey/ui/home/survey_ui_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 
+import '../../di/di.dart';
+import '../../usecases/get_surveys_use_case.dart';
 import '../widget/home_drawer.dart';
 import '../widget/home_footer.dart';
 import '../widget/home_header.dart';
 import '../widget/survey_page_viewer.dart';
+import 'home_state.dart';
+import 'home_view_model.dart';
+
+final homeViewModelProvider =
+    StateNotifierProvider.autoDispose<HomeViewModel, HomeState>((ref) {
+  return HomeViewModel(
+    getIt.get<GetSurveysUseCase>(),
+  );
+});
+
+final _surveysStreamProvider = StreamProvider.autoDispose<List<SurveyUiModel>>(
+    (ref) => ref.watch(homeViewModelProvider.notifier).surveysStream);
+
+final surveyPageIndexStreamProvider = StreamProvider.autoDispose<int>(
+    (ref) => ref.watch(homeViewModelProvider.notifier).surveyPageIndexStream);
 
 class HomeScreenKey {
   HomeScreenKey._();
@@ -35,41 +53,38 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: replace them with API data in the integrate task.
-    var surveyUiModels = [
-      const SurveyUiModel(
-        id: "1",
-        title: "Title 1",
-        description: "Description 1",
-        coverImageUrl:
-            "https://dhdbhh0jsld0o.cloudfront.net/m/1ea51560991bcb7d00d0_",
-      ),
-      const SurveyUiModel(
-        id: "2",
-        title: "Title 2",
-        description: "Description 2",
-        coverImageUrl:
-            "https://dhdbhh0jsld0o.cloudfront.net/m/287db81c5e4242412cc0_",
-      ),
-      const SurveyUiModel(
-        id: "3",
-        title: "Title 3",
-        description: "Description 3",
-        coverImageUrl:
-            "https://dhdbhh0jsld0o.cloudfront.net/m/0221e768b99dc3576210_",
-      )
-    ];
-    return _buildHomeScreen(surveyUiModels);
+    final uiModels = ref.watch(_surveysStreamProvider).value ?? [];
+    return ref.watch(homeViewModelProvider).when(
+          init: () => const Center(
+            // TODO: replace CircularProgressIndicator with the shimmer effect.
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation(Colors.white),
+            ),
+          ),
+          loading: () => _buildHomeScreen(uiModels, true),
+          success: () => _buildHomeScreen(uiModels, false),
+          error: (message) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content:
+                    Text(message ?? AppLocalizations.of(context)!.errorGeneric),
+              ));
+            });
+            return _buildHomeScreen(uiModels, false);
+          },
+        );
   }
 
-  Widget _buildHomeScreen(List<SurveyUiModel> surveyUiModels) {
+  Widget _buildHomeScreen(List<SurveyUiModel> surveyUiModels, bool isLoading) {
     return Scaffold(
       endDrawer: const HomeDrawer(),
       resizeToAvoidBottomInset: false,
       body: RefreshIndicator(
         color: AppColors.blackRussian,
         onRefresh: () async {
-          // TODO: add refresh logic.
+          ref
+              .read(homeViewModelProvider.notifier)
+              .loadSurveys(shouldRefresh: true);
         },
         child: Stack(
           children: <Widget>[
@@ -77,7 +92,6 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
               surveyUiModels: surveyUiModels,
               currentPageNotifier: _currentPageNotifier,
             ),
-            // Workaround to allow the page to be scrolled vertically to refresh on top
             FractionallySizedBox(
               heightFactor: 0.3,
               child: ListView(),
@@ -96,6 +110,9 @@ class HomeScreenState extends ConsumerState<HomeScreen> {
                     ValueListenableBuilder(
                       valueListenable: _currentPageNotifier,
                       builder: (_, int value, __) {
+                        ref
+                            .read(homeViewModelProvider.notifier)
+                            .loadMoreSurveys(value);
                         return HomeFooter(
                           survey: surveyUiModels[value],
                         );
