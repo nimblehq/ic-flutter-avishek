@@ -8,6 +8,7 @@ import 'package:flutter_survey/ui/surveydetail/survey_question_page.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../di/di.dart';
+import '../../gen/assets.gen.dart';
 import '../../usecases/get_survey_detail_use_case.dart';
 import '../home/survey_ui_model.dart';
 import '../widget/dimmed_image_background.dart';
@@ -20,6 +21,7 @@ const _imageScaleAnimationDurationInMillis = 700;
 
 final shouldZoomInBackgroundProvider =
     StateProvider.autoDispose<bool>((_) => false);
+final pageIndexProvider = StateProvider.autoDispose<int>((_) => 0);
 
 final surveyDetailViewModelProvider =
     StateNotifierProvider.autoDispose<SurveyDetailViewModel, SurveyDetailState>(
@@ -55,6 +57,7 @@ class SurveyDetailScreen extends ConsumerStatefulWidget {
 
 class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   final PageController _pageController = PageController();
+  final pages = List.empty(growable: true);
 
   @override
   void initState() {
@@ -95,7 +98,7 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   }
 
   Widget _buildSurveyScreen(SurveyUiModel? survey, bool isLoading) {
-    Future.delayed(Duration.zero, () {
+    Future.delayed(const Duration(milliseconds: 50), () {
       final shouldZoomInBackground =
           ref.watch(shouldZoomInBackgroundProvider.notifier);
       shouldZoomInBackground.state = true;
@@ -119,6 +122,24 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
                 );
               }),
               SafeArea(child: _buildSurveyQuestionPager(survey)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Expanded(child: SizedBox.shrink()),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Row(
+                      children: [
+                        const Expanded(child: SizedBox.shrink()),
+                        Consumer(builder: (_, ref, __) {
+                          final index = ref.watch(pageIndexProvider);
+                          return _buildActionButton(context, index);
+                        }),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               Center(
                 child: isLoading
                     ? const LoadingIndicator()
@@ -129,12 +150,101 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
         : const SizedBox.shrink();
   }
 
+  Widget _buildActionButton(BuildContext context, int index) {
+    if (index == 0) {
+      return _buildStartSurveyButton(context);
+    } else {
+      final isLastPage = index == pages.length;
+      if (isLastPage) {
+        return _buildSubmitButton();
+      } else {
+        return _buildNextButton();
+      }
+    }
+  }
+
+  Widget _buildStartSurveyButton(BuildContext context) {
+    return TextButton(
+      key: SurveyDetailScreenKey.btStart,
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.white),
+        foregroundColor: MaterialStateProperty.all(Colors.black),
+        overlayColor: MaterialStateProperty.all(Colors.black12),
+        padding: MaterialStateProperty.all(
+          const EdgeInsets.symmetric(
+            vertical: 19,
+          ),
+        ),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+        textStyle: MaterialStateProperty.all(
+          Theme.of(context).textTheme.labelLarge,
+        ),
+      ),
+      onPressed: _gotoNextPage,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Text(AppLocalizations.of(context)!.startSurvey),
+      ),
+    );
+  }
+
+  Widget _buildNextButton() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 20),
+      child: GestureDetector(
+        key: SurveyDetailScreenKey.btQuestionNext,
+        onTap: _gotoNextPage,
+        child: ClipOval(
+          child: Material(
+            color: Colors.white,
+            child: SizedBox(
+              width: 56,
+              height: 56,
+              child: Assets.icons.icArrowRight.svg(
+                fit: BoxFit.none,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubmitButton() {
+    return TextButton(
+      key: SurveyDetailScreenKey.btQuestionSubmit,
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all(Colors.white),
+        foregroundColor: MaterialStateProperty.all(Colors.black),
+        overlayColor: MaterialStateProperty.all(Colors.black12),
+        padding: MaterialStateProperty.all(
+          const EdgeInsets.symmetric(
+            vertical: 19,
+          ),
+        ),
+        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        ),
+        textStyle: MaterialStateProperty.all(
+          Theme.of(context).textTheme.labelLarge,
+        ),
+      ),
+      onPressed: () {
+        // Implement later.
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: Text(AppLocalizations.of(context)!.submitSurvey),
+      ),
+    );
+  }
+
   Widget _buildSurveyQuestionPager(SurveyUiModel survey) {
-    final pages = List.empty(growable: true);
     pages.add(
       SurveyIntroPage(
         survey: survey,
-        onNext: _gotoNextPage,
         onClose: _zoomOutAndPop,
       ),
     );
@@ -144,10 +254,6 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
             question: question,
             index: survey.questions.indexOf(question) + 1,
             total: survey.questions.length,
-            onNext: _gotoNextPage,
-            onSubmit: () {
-              // TODO: Implement later.
-            },
             onClose: () {
               // TODO: Implement later.
             },
@@ -163,6 +269,8 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   }
 
   void _gotoNextPage() {
+    final pageIndex = ref.watch(pageIndexProvider.notifier);
+    pageIndex.state = pageIndex.state + 1;
     _pageController.nextPage(
       duration: _pageScrollDuration,
       curve: Curves.ease,
