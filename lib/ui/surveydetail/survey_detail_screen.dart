@@ -3,7 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_detail_state.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_detail_view_model.dart';
-import 'package:flutter_survey/ui/surveydetail/survey_intro.dart';
+import 'package:flutter_survey/ui/surveydetail/survey_intro_page.dart';
+import 'package:flutter_survey/ui/surveydetail/survey_question_page.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../di/di.dart';
@@ -37,6 +38,8 @@ class SurveyDetailScreenKey {
   static const btBack = Key('btSurveyDetailBack');
   static const btStart = Key('btSurveyDetailStart');
   static const btClose = Key('btSurveyDetailClose');
+  static const btQuestionNext = Key('btSurveyDetailQuestionNext');
+  static const btQuestionSubmit = Key('btSurveyDetailQuestionSubmit');
 }
 
 class SurveyDetailScreen extends ConsumerStatefulWidget {
@@ -129,11 +132,26 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   Widget _buildSurveyQuestionPager(SurveyUiModel survey) {
     final pages = List.empty(growable: true);
     pages.add(
-      SurveyIntro(
+      SurveyIntroPage(
         survey: survey,
         onNext: _gotoNextPage,
         onClose: _zoomOutAndPop,
       ),
+    );
+
+    pages.addAll(
+      survey.questions.map((question) => SurveyQuestionPage(
+            question: question,
+            index: survey.questions.indexOf(question) + 1,
+            total: survey.questions.length,
+            onNext: _gotoNextPage,
+            onSubmit: () {
+              // TODO: Implement later.
+            },
+            onClose: () {
+              // TODO: Implement later.
+            },
+          )),
     );
 
     return PageView.builder(

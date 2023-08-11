@@ -5,12 +5,12 @@ import 'package:flutter_survey/ui/surveydetail/survey_detail_screen.dart';
 import '../../gen/assets.gen.dart';
 import '../home/survey_ui_model.dart';
 
-class SurveyIntro extends StatelessWidget {
+class SurveyIntroPage extends StatelessWidget {
   final SurveyUiModel survey;
   final Function() onNext;
   final Function() onClose;
 
-  const SurveyIntro({
+  const SurveyIntroPage({
     super.key,
     required this.survey,
     required this.onNext,
