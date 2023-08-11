@@ -28,6 +28,9 @@ final surveyDetailViewModelProvider =
   );
 });
 
+final _surveyStreamProvider = StreamProvider.autoDispose<SurveyUiModel>(
+    (ref) => ref.watch(surveyDetailViewModelProvider.notifier).surveyStream);
+
 class SurveyDetailScreenKey {
   SurveyDetailScreenKey._();
 
@@ -69,19 +72,20 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final uiModel = ref.watch(_surveyStreamProvider).value;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: ref.watch(surveyDetailViewModelProvider).when(
             init: () => const SizedBox.shrink(),
-            loading: () => _buildSurveyScreen(widget.surveyUiModel, true),
-            success: () => _buildSurveyScreen(widget.surveyUiModel, false),
+            loading: () => _buildSurveyScreen(uiModel, true),
+            success: () => _buildSurveyScreen(uiModel, false),
             error: (message) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(message ??
                         AppLocalizations.of(context)!.errorGeneric)));
               });
-              return _buildSurveyScreen(widget.surveyUiModel, false);
+              return _buildSurveyScreen(uiModel, false);
             },
           ),
     );
