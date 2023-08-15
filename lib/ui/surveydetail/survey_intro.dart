@@ -26,16 +26,11 @@ class SurveyIntro extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        GestureDetector(
+        IconButton(
           key: SurveyDetailScreenKey.btBack,
-          onTap: onClose,
-          child: SizedBox(
-            width: 56,
-            height: 56,
-            child: Assets.icons.icBack.svg(
-              fit: BoxFit.none,
-            ),
-          ),
+          icon: Assets.icons.icBack.svg(fit: BoxFit.none),
+          iconSize: 56,
+          onPressed: onClose,
         ),
         Expanded(
           child: Padding(
