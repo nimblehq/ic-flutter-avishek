@@ -118,6 +118,7 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
                       : _initialBackgroundScale,
                   child: DimmedImageBackground(
                     image: Image.network(survey.largeCoverImageUrl).image,
+                    shouldAnimate: true,
                   ),
                 );
               }),
