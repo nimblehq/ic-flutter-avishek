@@ -7,6 +7,8 @@ class SurveyUiModel extends Equatable {
   final String description;
   final String coverImageUrl;
 
+  String get largeCoverImageUrl => "${coverImageUrl}l";
+
   const SurveyUiModel({
     required this.id,
     required this.title,
