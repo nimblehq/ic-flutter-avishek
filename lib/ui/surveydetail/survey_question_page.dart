@@ -32,16 +32,10 @@ class SurveyQuestionPage extends StatelessWidget {
             const Expanded(child: SizedBox.shrink()),
             Padding(
               padding: const EdgeInsets.only(left: 20),
-              child: GestureDetector(
-                key: SurveyDetailScreenKey.btClose,
-                onTap: onClose,
-                child: SizedBox(
-                  width: 56,
-                  height: 56,
-                  child: Assets.icons.icClose.svg(
-                    fit: BoxFit.none,
-                  ),
-                ),
+              child: IconButton(
+                onPressed: onClose,
+                icon: Assets.icons.icClose
+                    .svg(fit: BoxFit.none, width: 56, height: 56),
               ),
             ),
           ],

@@ -166,21 +166,15 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   Widget _buildStartSurveyButton(BuildContext context) {
     return TextButton(
       key: SurveyDetailScreenKey.btStart,
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.white),
-        foregroundColor: MaterialStateProperty.all(Colors.black),
-        overlayColor: MaterialStateProperty.all(Colors.black12),
-        padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(
-            vertical: 19,
-          ),
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        shadowColor: Colors.black12,
+        padding: const EdgeInsets.symmetric(
+          vertical: 19,
         ),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-        textStyle: MaterialStateProperty.all(
-          Theme.of(context).textTheme.labelLarge,
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        textStyle: Theme.of(context).textTheme.labelLarge,
       ),
       onPressed: _gotoNextPage,
       child: Padding(
@@ -215,21 +209,17 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   Widget _buildSubmitButton() {
     return TextButton(
       key: SurveyDetailScreenKey.btQuestionSubmit,
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.white),
-        foregroundColor: MaterialStateProperty.all(Colors.black),
-        overlayColor: MaterialStateProperty.all(Colors.black12),
-        padding: MaterialStateProperty.all(
-          const EdgeInsets.symmetric(
-            vertical: 19,
-          ),
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        shadowColor: Colors.black12,
+        padding: const EdgeInsets.symmetric(
+          vertical: 19,
         ),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
         ),
-        textStyle: MaterialStateProperty.all(
-          Theme.of(context).textTheme.labelLarge,
-        ),
+        textStyle: Theme.of(context).textTheme.labelLarge,
       ),
       onPressed: () {
         // Implement later.
