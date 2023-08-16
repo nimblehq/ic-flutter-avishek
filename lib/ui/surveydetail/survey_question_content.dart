@@ -6,9 +6,9 @@ import 'package:flutter_survey/utils/extension/iterable_ext.dart';
 
 import '../../model/question.dart';
 
-const starEmoji = "⭐️️";
-const heartEmoji = "❤️️";
-const smileys = {0: "😡", 1: "😕", 2: "😐", 3: "🙂", 4: "😄"};
+const _starEmoji = "⭐️️";
+const _heartEmoji = "❤️️";
+const _smileys = {0: "😡", 1: "😕", 2: "😐", 3: "🙂", 4: "😄"};
 
 class SurveyQuestionContent extends ConsumerStatefulWidget {
   final Question question;
@@ -27,7 +27,7 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
     switch (widget.question.displayType) {
       case DisplayType.star:
         return _buildRating(
-          ratingIcon: starEmoji,
+          ratingIcon: _starEmoji,
           itemCount: widget.question.answers.length,
           onRate: (rating) {
             // TODO: Implement in the Integrate task
@@ -35,7 +35,7 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
         );
       case DisplayType.heart:
         return _buildRating(
-          ratingIcon: heartEmoji,
+          ratingIcon: _heartEmoji,
           itemCount: widget.question.answers.length,
           onRate: (rating) {
             // TODO: Implement in the Integrate task
@@ -69,7 +69,7 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
 
   Widget _buildSmileyRating() {
     final textStyle = Theme.of(context).textTheme.headlineSmall;
-    textItem(int index) => Text(smileys[index]!, style: textStyle);
+    textItem(int index) => Text(_smileys[index]!, style: textStyle);
 
     return SingleSelectableRatingBar(
       selectedItems:
