@@ -11,5 +11,6 @@
   "logout": "Log out",
   "today": "TODAY",
   "startSurvey": "Start Survey",
-  "submitSurvey": "Submit"
+  "submitSurvey": "Submit",
+  "hintYourThoughts": "Your thoughts"
 }
