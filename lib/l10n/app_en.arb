@@ -12,5 +12,7 @@
   "today": "TODAY",
   "startSurvey": "Start Survey",
   "submitSurvey": "Submit",
-  "hintYourThoughts": "Your thoughts"
+  "hintYourThoughts": "Your thoughts",
+  "npsNotAtAllLikely": "Not at all Likely",
+  "npsExtremelyLikely": "Extremely Likely"
 }

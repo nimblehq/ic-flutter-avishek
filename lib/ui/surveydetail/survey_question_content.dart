@@ -7,6 +7,7 @@ import 'package:flutter_survey/utils/extension/iterable_ext.dart';
 
 import '../../model/answer.dart';
 import '../../model/question.dart';
+import '../widget/nps_bar.dart';
 import '../widget/primary_text_form_field_decoration.dart';
 
 const _starEmoji = "⭐️️";
@@ -58,11 +59,30 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
             context: context,
             answers: widget.question.answers,
             onItemChanged: (answerId, text) {
-              //TODO: Impelement later.
+              //TODO: Implelement later.
+            });
+      case DisplayType.nps:
+        return _buildNps(
+            items: widget.question.answers.map((e) => e.text).toList(),
+            onRate: (rating) {
+              // TODO: Implement later.
             });
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildNps({
+    required List<String> items,
+    required Function onRate,
+  }) {
+    return SizedBox(
+      height: 120.0,
+      child: NpsBar(
+        items: items,
+        onRatingUpdate: (value) => onRate(value.toInt()),
+      ),
+    );
   }
 
   Widget _buildTextFields({
