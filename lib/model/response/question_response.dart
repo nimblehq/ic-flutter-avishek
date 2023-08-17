@@ -15,7 +15,7 @@ class QuestionResponse {
   final String? imageUrl;
   final String? coverImageUrl;
   final double? coverImageOpacity;
-  final List<AnswerResponse> answers;
+  final List<AnswerResponse>? answers;
 
   QuestionResponse({
     required this.id,
