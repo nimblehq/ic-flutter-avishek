@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_survey/ui/surveydetail/multi_choice_form.dart';
 import 'package:flutter_survey/ui/surveydetail/single_selectable_rating_bar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_survey/utils/extension/iterable_ext.dart';
@@ -51,7 +52,7 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
         return _buildTextArea(
           context: context,
           onItemChanged: (text) {
-            // Implement later.
+            // TODO: Implement later.
           },
         );
       case DisplayType.textfield:
@@ -59,7 +60,7 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
             context: context,
             answers: widget.question.answers,
             onItemChanged: (answerId, text) {
-              //TODO: Implelement later.
+              //TODO: Implement later.
             });
       case DisplayType.nps:
         return _buildNps(
@@ -67,9 +68,27 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
             onRate: (rating) {
               // TODO: Implement later.
             });
+      case DisplayType.choice:
+        return _buildMultipleChoice(
+          answers: widget.question.answers,
+        );
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildMultipleChoice({
+    required List<Answer> answers,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(80.0),
+      child: MultiChoiceForm(
+        items: answers.map((answer) => Item(answer.id, answer.text)).toList(),
+        onChanged: (items) {
+          // TODO: Implement later.
+        },
+      ),
+    );
   }
 
   Widget _buildNps({
