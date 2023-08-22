@@ -18,6 +18,11 @@ class AppTheme {
             fontSize: 17,
             fontWeight: FontWeight.normal,
           ),
+          bodyLarge: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.normal,
+          ),
           titleSmall: TextStyle(
             color: Colors.white,
             fontSize: 13,
