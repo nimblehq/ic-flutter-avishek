@@ -83,7 +83,9 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
     return Padding(
       padding: const EdgeInsets.all(80.0),
       child: MultiChoiceForm(
-        items: answers.map((answer) => Item(answer.id, answer.text)).toList(),
+        items: answers
+            .map((answer) => MultiChoiceItem(answer.id, answer.text))
+            .toList(),
         onChanged: (items) {
           // TODO: Implement later.
         },

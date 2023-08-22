@@ -4,8 +4,8 @@ import 'package:flutter_survey/theme/app_colors.dart';
 import '../../gen/assets.gen.dart';
 
 class MultiChoiceForm extends StatefulWidget {
-  final List<Item> items;
-  final ValueChanged<List<Item>> onChanged;
+  final List<MultiChoiceItem> items;
+  final ValueChanged<List<MultiChoiceItem>> onChanged;
 
   const MultiChoiceForm(
       {super.key, required this.items, required this.onChanged});
@@ -66,12 +66,12 @@ class MultiChoiceFormState extends State<MultiChoiceForm> {
   }
 }
 
-class Item {
+class MultiChoiceItem {
   final String id;
   final String label;
   bool isChecked = false;
 
-  Item(this.id, this.label);
+  MultiChoiceItem(this.id, this.label);
 
   @override
   String toString() {
