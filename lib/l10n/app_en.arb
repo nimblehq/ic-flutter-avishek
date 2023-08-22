@@ -10,5 +10,6 @@
   "errorGeneric": "Something went wrong. Please try again later.",
   "logout": "Log out",
   "today": "TODAY",
-  "startSurvey": "Start Survey"
+  "startSurvey": "Start Survey",
+  "submitSurvey": "Submit"
 }

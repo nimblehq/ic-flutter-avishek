@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_survey/model/response/question_response.dart';
 
+import 'answer.dart';
+
 class Question extends Equatable {
   final String id;
   final String text;
@@ -9,6 +11,7 @@ class Question extends Equatable {
   final String imageUrl;
   final String coverImageUrl;
   final double coverImageOpacity;
+  final List<Answer> answers;
 
   const Question({
     required this.id,
@@ -18,6 +21,7 @@ class Question extends Equatable {
     required this.imageUrl,
     required this.coverImageOpacity,
     required this.coverImageUrl,
+    required this.answers,
   });
 
   @override
@@ -29,6 +33,7 @@ class Question extends Equatable {
         imageUrl,
         coverImageOpacity,
         coverImageUrl,
+        answers,
       ];
 
   factory Question.fromQuestionResponse(QuestionResponse response) {
@@ -40,6 +45,10 @@ class Question extends Equatable {
       imageUrl: response.imageUrl ?? "",
       coverImageOpacity: response.coverImageOpacity ?? 0,
       coverImageUrl: response.coverImageUrl ?? "",
+      answers: response.answers
+              ?.map((answer) => Answer.fromAnswerResponse(answer))
+              .toList() ??
+          [],
     );
   }
 }
