@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_survey/gen/assets.gen.dart';
 import 'package:flutter_survey/model/question.dart';
-import 'package:flutter_survey/ui/surveydetail/survey_detail_screen.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_question_content.dart';
 
 class SurveyQuestionPage extends StatelessWidget {
