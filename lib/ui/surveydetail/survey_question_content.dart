@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_survey/ui/surveydetail/single_selectable_rating_bar.dart';
+import 'package:flutter_survey/utils/extension/iterable_ext.dart';
 
 import '../../model/question.dart';
 
-const starEmoji = "⭐️️";
-const heartEmoji = "❤️️";
+const _starEmoji = "⭐️️";
+const _heartEmoji = "❤️️";
+const _smileys = {0: "😡", 1: "😕", 2: "😐", 3: "🙂", 4: "😄"};
 
 class SurveyQuestionContent extends ConsumerStatefulWidget {
   final Question question;
@@ -24,7 +27,7 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
     switch (widget.question.displayType) {
       case DisplayType.star:
         return _buildRating(
-          ratingIcon: starEmoji,
+          ratingIcon: _starEmoji,
           itemCount: widget.question.answers.length,
           onRate: (rating) {
             // TODO: Implement in the Integrate task
@@ -32,12 +35,14 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
         );
       case DisplayType.heart:
         return _buildRating(
-          ratingIcon: heartEmoji,
+          ratingIcon: _heartEmoji,
           itemCount: widget.question.answers.length,
           onRate: (rating) {
             // TODO: Implement in the Integrate task
           },
         );
+      case DisplayType.smiley:
+        return _buildSmileyRating();
       default:
         return const SizedBox.shrink();
     }
@@ -59,6 +64,25 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
         ),
       ),
       onRatingUpdate: (rating) => onRate(rating.toInt()),
+    );
+  }
+
+  Widget _buildSmileyRating() {
+    final textStyle = Theme.of(context).textTheme.headlineSmall;
+    textItem(int index) => Text(_smileys[index]!, style: textStyle);
+
+    return SingleSelectableRatingBar(
+      selectedItems:
+          widget.question.answers.mapIndexed((_, i) => textItem(i)).toList(),
+      unselectedItems: widget.question.answers.mapIndexed((_, i) {
+        return Opacity(
+          opacity: 0.5,
+          child: textItem(i),
+        );
+      }).toList(),
+      onRate: () {
+        //TODO: implement later.
+      },
     );
   }
 }
