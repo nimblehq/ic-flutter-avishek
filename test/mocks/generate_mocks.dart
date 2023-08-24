@@ -11,6 +11,7 @@ import 'package:flutter_survey/usecases/get_survey_detail_use_case.dart';
 import 'package:flutter_survey/usecases/get_surveys_use_case.dart';
 import 'package:flutter_survey/usecases/is_logged_in_use_case.dart';
 import 'package:flutter_survey/usecases/login_use_case.dart';
+import 'package:flutter_survey/usecases/submit_survey_use_case.dart';
 import 'package:hive/hive.dart';
 import 'package:mockito/annotations.dart';
 
@@ -26,6 +27,7 @@ import 'package:mockito/annotations.dart';
   IsLoggedInUseCase,
   LoginUseCase,
   GetSurveysUseCase,
+  SubmitSurveyUseCase,
   GetSurveyDetailUseCase,
   UseCaseException,
   SurveyDetail,

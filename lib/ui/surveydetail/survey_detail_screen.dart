@@ -5,6 +5,7 @@ import 'package:flutter_survey/ui/surveydetail/survey_detail_state.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_detail_view_model.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_intro_page.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_question_page.dart';
+import 'package:flutter_survey/usecases/submit_survey_use_case.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../di/di.dart';
@@ -28,6 +29,7 @@ final surveyDetailViewModelProvider =
         (ref) {
   return SurveyDetailViewModel(
     getIt.get<GetSurveyDetailUseCase>(),
+    getIt.get<SubmitSurveyUseCase>(),
   );
 });
 
@@ -80,7 +82,7 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   Widget build(BuildContext context) {
     final uiModel = ref.watch(_surveyStreamProvider).value;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: ref.watch(surveyDetailViewModelProvider).when(
             init: () => const SizedBox.shrink(),
             loading: () => _buildSurveyScreen(uiModel, true),
@@ -91,6 +93,10 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
                     content: Text(message ??
                         AppLocalizations.of(context)!.errorGeneric)));
               });
+              return _buildSurveyScreen(uiModel, false);
+            },
+            submitted: () {
+              // TODO: Navigate to the Thank You screen.
               return _buildSurveyScreen(uiModel, false);
             },
           ),
@@ -155,7 +161,7 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
     if (index == 0) {
       return _buildStartSurveyButton(context);
     } else {
-      final isLastPage = index == pages.length;
+      final isLastPage = index == pages.length - 1;
       if (isLastPage) {
         return _buildSubmitButton();
       } else {
@@ -223,7 +229,7 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
         textStyle: Theme.of(context).textTheme.labelLarge,
       ),
       onPressed: () {
-        // Implement later.
+        ref.read(surveyDetailViewModelProvider.notifier).submitSurvey();
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),

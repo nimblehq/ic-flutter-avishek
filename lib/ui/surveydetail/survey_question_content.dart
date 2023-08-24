@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_picker/picker.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/ui/surveydetail/multi_choice_form.dart';
 import 'package:flutter_survey/ui/surveydetail/single_selectable_rating_bar.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_survey/ui/surveydetail/survey_detail_screen.dart';
 import 'package:flutter_survey/utils/extension/iterable_ext.dart';
 
 import '../../model/answer.dart';
@@ -35,25 +36,25 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
         return _buildRating(
           ratingIcon: _starEmoji,
           itemCount: widget.question.answers.length,
-          onRate: (rating) {
-            // TODO: Implement in the Integrate task
-          },
+          onRate: _saveRating,
         );
       case DisplayType.heart:
         return _buildRating(
           ratingIcon: _heartEmoji,
           itemCount: widget.question.answers.length,
-          onRate: (rating) {
-            // TODO: Implement in the Integrate task
-          },
+          onRate: _saveRating,
         );
       case DisplayType.smiley:
-        return _buildSmileyRating();
+        return _buildSmileyRating(
+          onRate: _saveRating,
+        );
       case DisplayType.textarea:
         return _buildTextArea(
           context: context,
           onItemChanged: (text) {
-            // TODO: Implement later.
+            ref
+                .read(surveyDetailViewModelProvider.notifier)
+                .saveText(widget.question.id, text);
           },
         );
       case DisplayType.textfield:
@@ -61,28 +62,44 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
             context: context,
             answers: widget.question.answers,
             onItemChanged: (answerId, text) {
-              //TODO: Implement later.
+              ref
+                  .read(surveyDetailViewModelProvider.notifier)
+                  .saveTextFieldsAnswer(widget.question.id, answerId, text);
             });
       case DisplayType.nps:
         return _buildNps(
             items: widget.question.answers.map((e) => e.text).toList(),
-            onRate: (rating) {
-              // TODO: Implement later.
-            });
+            onRate: _saveRating);
       case DisplayType.choice:
         return _buildMultipleChoice(
           answers: widget.question.answers,
+          onItemsChanged: (List<MultiChoiceItem> items) {
+            ref
+                .read(surveyDetailViewModelProvider.notifier)
+                .saveMultiChoiceItems(
+                  widget.question.id,
+                  items,
+                );
+          },
         );
       case DisplayType.dropdown:
         return _buildPicker(
             context: context,
             answers: widget.question.answers,
             onSelect: (answer) {
-              // TODO: Implement later.
+              ref
+                  .read(surveyDetailViewModelProvider.notifier)
+                  .saveDropdownAnswer(widget.question.id, answer);
             });
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  void _saveRating(int rating) {
+    ref
+        .read(surveyDetailViewModelProvider.notifier)
+        .saveRating(widget.question.id, rating);
   }
 
   Widget _buildPicker({
@@ -90,6 +107,7 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
     required List<Answer> answers,
     required Function(Answer) onSelect,
   }) {
+    onSelect(answers.first);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 80),
       child: Picker(
@@ -124,6 +142,7 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
 
   Widget _buildMultipleChoice({
     required List<Answer> answers,
+    required Function(List<MultiChoiceItem>) onItemsChanged,
   }) {
     return Padding(
       padding: const EdgeInsets.all(80.0),
@@ -131,9 +150,7 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
         items: answers
             .map((answer) => MultiChoiceItem(answer.id, answer.text))
             .toList(),
-        onChanged: (items) {
-          // TODO: Implement later.
-        },
+        onChanged: onItemsChanged,
       ),
     );
   }
@@ -215,7 +232,7 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
     );
   }
 
-  Widget _buildSmileyRating() {
+  Widget _buildSmileyRating({required Function onRate}) {
     final textStyle = Theme.of(context).textTheme.headlineSmall;
     textItem(int index) => Text(_smileys[index]!, style: textStyle);
 
@@ -228,9 +245,7 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
           child: textItem(i),
         );
       }).toList(),
-      onRate: () {
-        //TODO: implement later.
-      },
+      onRate: onRate,
     );
   }
 }
