@@ -177,33 +177,31 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   }
 
   Widget _buildToolbar(bool shouldShowBackButton, Function() onBackOrClose) {
-    if (shouldShowBackButton) {
-      return IconButton(
-        key: SurveyDetailScreenKey.btBack,
-        icon: SizedBox(
-          width: 56,
-          height: 56,
-          child:
-              Assets.icons.icBack.svg(fit: BoxFit.none, width: 56, height: 56),
-        ),
-        onPressed: onBackOrClose,
-      );
-    } else {
-      return Row(
-        children: [
-          const Expanded(child: SizedBox.shrink()),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: IconButton(
-              key: SurveyDetailScreenKey.btClose,
-              icon: Assets.icons.icClose
+    return shouldShowBackButton
+        ? IconButton(
+            key: SurveyDetailScreenKey.btBack,
+            icon: SizedBox(
+              width: 56,
+              height: 56,
+              child: Assets.icons.icBack
                   .svg(fit: BoxFit.none, width: 56, height: 56),
-              onPressed: onBackOrClose,
             ),
-          ),
-        ],
-      );
-    }
+            onPressed: onBackOrClose,
+          )
+        : Row(
+            children: [
+              const Expanded(child: SizedBox.shrink()),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: IconButton(
+                  key: SurveyDetailScreenKey.btClose,
+                  icon: Assets.icons.icClose
+                      .svg(fit: BoxFit.none, width: 56, height: 56),
+                  onPressed: onBackOrClose,
+                ),
+              ),
+            ],
+          );
   }
 
   Widget _buildActionButton(BuildContext context, int index) {
