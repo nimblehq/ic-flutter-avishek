@@ -5,6 +5,7 @@ import 'package:flutter_survey/ui/surveydetail/single_selectable_rating_bar.dart
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_survey/utils/extension/iterable_ext.dart';
 
+import '../../model/answer.dart';
 import '../../model/question.dart';
 import '../widget/primary_text_form_field_decoration.dart';
 
@@ -52,9 +53,43 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
             // Implement later.
           },
         );
+      case DisplayType.textfield:
+        return _buildTextFields(
+            context: context,
+            answers: widget.question.answers,
+            onItemChanged: (answerId, text) {
+              //TODO: Impelement later.
+            });
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildTextFields({
+    required BuildContext context,
+    required List<Answer> answers,
+    required Function onItemChanged,
+  }) {
+    return Column(
+      children: answers
+          .map((answer) => Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: TextFormField(
+                  autofocus: true,
+                  onChanged: (text) => onItemChanged(answer.id, text),
+                  decoration: PrimaryTextFormFieldDecoration(
+                    context: context,
+                    hint: answer.text,
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  textInputAction: (answers.last.id != answer.id)
+                      ? TextInputAction.next
+                      : TextInputAction.done,
+                ),
+              ))
+          .toList(),
+    );
   }
 
   Widget _buildTextArea({
