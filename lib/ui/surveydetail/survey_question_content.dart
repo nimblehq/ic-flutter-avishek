@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/ui/surveydetail/single_selectable_rating_bar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_survey/utils/extension/iterable_ext.dart';
 
 import '../../model/question.dart';
+import '../widget/primary_text_form_field_decoration.dart';
 
 const _starEmoji = "⭐️️";
 const _heartEmoji = "❤️️";
@@ -43,9 +45,34 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
         );
       case DisplayType.smiley:
         return _buildSmileyRating();
+      case DisplayType.textarea:
+        return _buildTextArea(
+          context: context,
+          onItemChanged: (text) {
+            // Implement later.
+          },
+        );
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildTextArea({
+    required BuildContext context,
+    required Function onItemChanged,
+  }) {
+    return TextFormField(
+      autofocus: true,
+      onChanged: (text) => onItemChanged(text),
+      decoration: PrimaryTextFormFieldDecoration(
+        context: context,
+        hint: AppLocalizations.of(context)!.hintYourThoughts,
+      ),
+      style: Theme.of(context).textTheme.bodyMedium,
+      keyboardType: TextInputType.multiline,
+      textInputAction: TextInputAction.done,
+      maxLines: 5,
+    );
   }
 
   Widget _buildRating({
