@@ -95,19 +95,25 @@ class SurveyDetailViewModel extends StateNotifier<SurveyDetailState> {
     final submitAnswer = submitQuestion?.answers
         .firstWhereOrNull((element) => element.id == answerId);
 
-    if (text.isNotEmpty) {
-      final newSubmitAnswer = SubmitAnswer(id: answerId, answer: text);
-      if (submitQuestion == null) {
-        _submitQuestions
-            .add(SubmitQuestion(id: questionId, answers: [newSubmitAnswer]));
-      } else if (submitAnswer == null) {
-        submitQuestion.answers.add(newSubmitAnswer);
-      } else {
-        submitAnswer.answer = text;
-      }
-    } else if (submitQuestion != null && submitAnswer != null) {
+    // Clear answers
+    if (text.isEmpty && submitQuestion != null && submitAnswer != null) {
       submitQuestion.answers.removeWhere((element) => element.id == answerId);
+      return;
     }
+
+    final newSubmitAnswer = SubmitAnswer(id: answerId, answer: text);
+    if (submitQuestion == null) {
+      _submitQuestions
+          .add(SubmitQuestion(id: questionId, answers: [newSubmitAnswer]));
+      return;
+    }
+
+    if (submitAnswer == null) {
+      submitQuestion.answers.add(newSubmitAnswer);
+      return;
+    }
+
+    submitAnswer.answer = text;
   }
 
   void _saveAnswersToQuestions(String questionId, List<SubmitAnswer> answers) {
