@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_picker/picker.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_survey/ui/surveydetail/multi_choice_form.dart';
@@ -72,9 +73,53 @@ class SurveyQuestionContentState extends ConsumerState<SurveyQuestionContent> {
         return _buildMultipleChoice(
           answers: widget.question.answers,
         );
+      case DisplayType.dropdown:
+        return _buildPicker(
+            context: context,
+            answers: widget.question.answers,
+            onSelect: (answer) {
+              // TODO: Implement later.
+            });
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  Widget _buildPicker({
+    required BuildContext context,
+    required List<Answer> answers,
+    required Function(Answer) onSelect,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 80),
+      child: Picker(
+        adapter: PickerDataAdapter<String>(
+          data: answers.map((e) => PickerItem(value: e.text)).toList(),
+        ),
+        textAlign: TextAlign.center,
+        textStyle: Theme.of(context).textTheme.bodyLarge,
+        selectedTextStyle: Theme.of(context)
+            .textTheme
+            .bodyLarge
+            ?.copyWith(fontWeight: FontWeight.bold),
+        selectionOverlay: const DecoratedBox(
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: Colors.white, width: 0.5),
+              bottom: BorderSide(color: Colors.white, width: 0.5),
+            ),
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        headerColor: Colors.transparent,
+        containerColor: Colors.transparent,
+        itemExtent: 50,
+        hideHeader: true,
+        onSelect: (_, __, selected) {
+          onSelect(answers[selected.first]);
+        },
+      ).makePicker(),
+    );
   }
 
   Widget _buildMultipleChoice({
