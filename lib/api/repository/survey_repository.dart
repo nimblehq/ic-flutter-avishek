@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:injectable/injectable.dart';
 
 import '../../local/local_storage.dart';
+import '../../model/request/submit_survey_request.dart';
 import '../../model/survey.dart';
 import '../../model/survey_detail.dart';
 import '../exception/network_exceptions.dart';
@@ -16,6 +17,11 @@ abstract class SurveyRepository {
   );
 
   Future<SurveyDetail> getSurveyDetail(String surveyId);
+
+  Future<void> submitSurvey(
+    String surveyId,
+    List<SubmitQuestion> questions,
+  );
 }
 
 @LazySingleton(as: SurveyRepository)
@@ -84,6 +90,23 @@ class SurveyRepositoryImpl extends SurveyRepository {
     try {
       final response = await _surveyService.getSurveyDetail(surveyId);
       return SurveyDetail.fromSurveyDetailResponse(response);
+    } catch (exception) {
+      throw NetworkExceptions.fromDioException(exception);
+    }
+  }
+
+  @override
+  Future<void> submitSurvey(
+    String surveyId,
+    List<SubmitQuestion> questions,
+  ) async {
+    try {
+      return await _surveyService.submitSurvey(
+        SubmitSurveyRequest(
+          surveyId: surveyId,
+          questions: questions,
+        ),
+      );
     } catch (exception) {
       throw NetworkExceptions.fromDioException(exception);
     }
