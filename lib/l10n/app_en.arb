@@ -14,5 +14,6 @@
   "submitSurvey": "Submit",
   "hintYourThoughts": "Your thoughts",
   "npsNotAtAllLikely": "Not at all Likely",
-  "npsExtremelyLikely": "Extremely Likely"
+  "npsExtremelyLikely": "Extremely Likely",
+  "thanks": "Thanks for taking \u2028the survey."
 }

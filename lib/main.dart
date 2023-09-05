@@ -8,6 +8,7 @@ import 'package:flutter_survey/ui/home/home_screen.dart';
 import 'package:flutter_survey/ui/home/survey_ui_model.dart';
 import 'package:flutter_survey/ui/login/login_screen.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_detail_screen.dart';
+import 'package:flutter_survey/ui/thankyou/thank_you_screen.dart';
 import 'package:flutter_survey/utils/util.dart';
 import 'package:go_router/go_router.dart';
 
@@ -25,6 +26,7 @@ void main() async {
 const routePathRootScreen = '/';
 const routePathHomeScreen = 'home';
 const routePathSurveyDetailScreen = 'survey-detail';
+const routePathThankYouScreen = 'thank-you';
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
@@ -56,6 +58,12 @@ class MyApp extends StatelessWidget {
                 child: SurveyDetailScreen(surveyUiModel: surveyUiModel),
               );
             },
+          ),
+          GoRoute(
+            path: routePathThankYouScreen,
+            name: routePathThankYouScreen,
+            builder: (BuildContext context, GoRouterState state) =>
+                const ThankYouScreen(),
           ),
         ],
       ),
