@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_survey/gen/assets.gen.dart';
 import 'package:flutter_survey/model/question.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_question_content.dart';
 
@@ -7,14 +6,12 @@ class SurveyQuestionPage extends StatelessWidget {
   final Question question;
   final int index;
   final int total;
-  final Function() onClose;
 
   const SurveyQuestionPage({
     super.key,
     required this.question,
     required this.index,
     required this.total,
-    required this.onClose,
   });
 
   @override
@@ -22,30 +19,10 @@ class SurveyQuestionPage extends StatelessWidget {
     return _buildPage(context);
   }
 
-  Column _buildPage(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            const Expanded(child: SizedBox.shrink()),
-            Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: IconButton(
-                onPressed: onClose,
-                icon: Assets.icons.icClose
-                    .svg(fit: BoxFit.none, width: 56, height: 56),
-              ),
-            ),
-          ],
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: _buildContent(context),
-          ),
-        ),
-      ],
+  Widget _buildPage(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: _buildContent(context),
     );
   }
 

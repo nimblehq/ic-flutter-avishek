@@ -1,10 +1,13 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_survey/model/question.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_detail_state.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_detail_view_model.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_intro_page.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_question_page.dart';
+import 'package:flutter_survey/usecases/submit_survey_use_case.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../di/di.dart';
@@ -28,6 +31,7 @@ final surveyDetailViewModelProvider =
         (ref) {
   return SurveyDetailViewModel(
     getIt.get<GetSurveyDetailUseCase>(),
+    getIt.get<SubmitSurveyUseCase>(),
   );
 });
 
@@ -80,7 +84,7 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   Widget build(BuildContext context) {
     final uiModel = ref.watch(_surveyStreamProvider).value;
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: ref.watch(surveyDetailViewModelProvider).when(
             init: () => const SizedBox.shrink(),
             loading: () => _buildSurveyScreen(uiModel, true),
@@ -91,6 +95,10 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
                     content: Text(message ??
                         AppLocalizations.of(context)!.errorGeneric)));
               });
+              return _buildSurveyScreen(uiModel, false);
+            },
+            submitted: () {
+              // TODO: Navigate to the Thank You screen.
               return _buildSurveyScreen(uiModel, false);
             },
           ),
@@ -122,7 +130,24 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
                   ),
                 );
               }),
-              SafeArea(child: _buildSurveyQuestionPager(survey)),
+              SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Consumer(builder: (_, ref, __) {
+                      final isFirstPage = ref.watch(pageIndexProvider) == 0;
+                      return _buildToolbar(isFirstPage, () {
+                        if (isFirstPage) {
+                          _zoomOutAndPop();
+                        } else {
+                          // TODO: Implement later
+                        }
+                      });
+                    }),
+                    Expanded(child: _buildSurveyQuestionPager(survey))
+                  ],
+                ),
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -151,11 +176,39 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
         : const SizedBox.shrink();
   }
 
+  Widget _buildToolbar(bool shouldShowBackButton, Function() onBackOrClose) {
+    return shouldShowBackButton
+        ? IconButton(
+            key: SurveyDetailScreenKey.btBack,
+            icon: SizedBox(
+              width: 56,
+              height: 56,
+              child: Assets.icons.icBack
+                  .svg(fit: BoxFit.none, width: 56, height: 56),
+            ),
+            onPressed: onBackOrClose,
+          )
+        : Row(
+            children: [
+              const Expanded(child: SizedBox.shrink()),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: IconButton(
+                  key: SurveyDetailScreenKey.btClose,
+                  icon: Assets.icons.icClose
+                      .svg(fit: BoxFit.none, width: 56, height: 56),
+                  onPressed: onBackOrClose,
+                ),
+              ),
+            ],
+          );
+  }
+
   Widget _buildActionButton(BuildContext context, int index) {
     if (index == 0) {
       return _buildStartSurveyButton(context);
     } else {
-      final isLastPage = index == pages.length;
+      final isLastPage = index == pages.length - 1;
       if (isLastPage) {
         return _buildSubmitButton();
       } else {
@@ -223,7 +276,7 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
         textStyle: Theme.of(context).textTheme.labelLarge,
       ),
       onPressed: () {
-        // Implement later.
+        ref.read(surveyDetailViewModelProvider.notifier).submitSurvey();
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -233,22 +286,22 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   }
 
   Widget _buildSurveyQuestionPager(SurveyUiModel survey) {
+    pages.clear();
+
     pages.add(
       SurveyIntroPage(
         survey: survey,
-        onClose: _zoomOutAndPop,
       ),
     );
 
     pages.addAll(
-      survey.questions.map((question) => SurveyQuestionPage(
-            question: question,
-            index: survey.questions.indexOf(question) + 1,
-            total: survey.questions.length,
-            onClose: () {
-              // TODO: Implement later.
-            },
-          )),
+      survey.questions
+          .whereNot((element) => element.displayType == DisplayType.intro)
+          .mapIndexed((index, question) => SurveyQuestionPage(
+                question: question,
+                index: index + 1,
+                total: survey.questions.length - 1,
+              )),
     );
 
     return PageView.builder(
