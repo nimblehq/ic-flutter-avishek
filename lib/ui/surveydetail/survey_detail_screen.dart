@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_survey/main.dart';
 import 'package:flutter_survey/model/question.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_detail_state.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_detail_view_model.dart';
@@ -82,6 +83,15 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<SurveyDetailState>(surveyDetailViewModelProvider, (_, state) {
+      state.maybeWhen(
+        submitted: () {
+          context.replaceNamed(routePathThankYouScreen);
+        },
+        orElse: () {},
+      );
+    });
+
     final uiModel = ref.watch(_surveyStreamProvider).value;
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -97,10 +107,7 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
               });
               return _buildSurveyScreen(uiModel, false);
             },
-            submitted: () {
-              // TODO: Navigate to the Thank You screen.
-              return _buildSurveyScreen(uiModel, false);
-            },
+            submitted: () => const SizedBox.shrink(),
           ),
     );
   }
