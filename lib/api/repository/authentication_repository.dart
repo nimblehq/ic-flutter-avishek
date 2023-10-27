@@ -1,4 +1,5 @@
 import 'package:flutter_survey/api/authentication_service.dart';
+import 'package:flutter_survey/model/request/refresh_token_request.dart';
 import 'package:flutter_survey/model/response/auth_token_response.dart';
 import 'package:injectable/injectable.dart';
 
@@ -10,6 +11,10 @@ abstract class AuthenticationRepository {
   Future<AuthToken> logIn({
     required String email,
     required String password,
+  });
+
+  Future<AuthToken> refreshToken({
+    required String refreshToken,
   });
 }
 
@@ -25,6 +30,18 @@ class AuthenticationRepositoryImpl extends AuthenticationRepository {
     try {
       final response = await _authenticationService.logIn(
         AuthTokenRequest(email: email, password: password),
+      );
+      return response.toAuthToken();
+    } catch (exception) {
+      throw NetworkExceptions.fromDioException(exception);
+    }
+  }
+
+  @override
+  Future<AuthToken> refreshToken({required String refreshToken}) async {
+    try {
+      final response = await _authenticationService.refreshToken(
+        RefreshTokenRequest(refreshToken: refreshToken),
       );
       return response.toAuthToken();
     } catch (exception) {
