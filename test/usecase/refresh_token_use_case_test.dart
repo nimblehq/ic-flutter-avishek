@@ -20,12 +20,14 @@ void main() {
       when(mockLocalStorage.getRefreshToken())
           .thenAnswer((_) async => "refreshToken");
 
-      useCase = RefreshTokenUseCase(mockAuthenticationRepository, mockLocalStorage);
+      useCase =
+          RefreshTokenUseCase(mockAuthenticationRepository, mockLocalStorage);
     });
 
     test('When calling refresh token successfully, it returns Success result',
         () async {
-      when(mockAuthenticationRepository.refreshToken(refreshToken: anyNamed('refreshToken')))
+      when(mockAuthenticationRepository.refreshToken(
+              refreshToken: anyNamed('refreshToken')))
           .thenAnswer((_) async => const AuthToken(
                 accessToken: "accessToken",
                 tokenType: "tokenType",
@@ -41,7 +43,8 @@ void main() {
 
     test('When calling refresh token failed, it returns Failed result',
         () async {
-      when(mockAuthenticationRepository.refreshToken(refreshToken: anyNamed('refreshToken')))
+      when(mockAuthenticationRepository.refreshToken(
+              refreshToken: anyNamed('refreshToken')))
           .thenAnswer((_) => Future.error(
                 const NetworkExceptions.unauthorisedRequest(),
               ));
