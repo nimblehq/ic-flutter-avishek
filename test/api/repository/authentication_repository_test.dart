@@ -1,6 +1,7 @@
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_survey/api/exception/network_exceptions.dart';
 import 'package:flutter_survey/api/repository/authentication_repository.dart';
+import 'package:flutter_survey/model/auth_token.dart';
 import 'package:flutter_survey/model/response/auth_token_response.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -51,6 +52,40 @@ void main() {
             password: "password",
           );
 
+      expect(result, throwsA(isA<NetworkExceptions>()));
+    });
+
+    test(
+        'When calling refresh token successfully, it returns corresponding mapped result',
+        () async {
+      final authTokenResponse = AuthTokenResponse(
+        tokenType: 'tokenType',
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+        expiresIn: 0,
+      );
+      const expectedValue = AuthToken(
+        tokenType: 'tokenType',
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+        expiresIn: 0,
+      );
+      when(mockAuthenticationService.refreshToken(any))
+          .thenAnswer((_) async => authTokenResponse);
+
+      final result = await authenticationRepository.refreshToken(
+          refreshToken: 'refreshToken');
+      expect(result, expectedValue);
+    });
+
+    test(
+        'When calling refresh token failed, it returns NetworkExceptions error',
+        () async {
+      when(mockAuthenticationService.refreshToken(any))
+          .thenThrow(MockDioException());
+
+      result() =>
+          authenticationRepository.refreshToken(refreshToken: 'refreshToken');
       expect(result, throwsA(isA<NetworkExceptions>()));
     });
   });
