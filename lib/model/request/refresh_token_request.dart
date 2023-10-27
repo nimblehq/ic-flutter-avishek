@@ -10,9 +10,9 @@ const _grantType = 'refresh_token';
 @JsonSerializable()
 class RefreshTokenRequest {
   final String refreshToken;
-  final String grantType = _grantType;
-  final String clientId = Env.authClientId;
-  final String clientSecret = Env.authClientSecret;
+  late String grantType = _grantType;
+  late String clientId = Env.authClientId;
+  late String clientSecret = Env.authClientSecret;
 
   RefreshTokenRequest({
     required this.refreshToken,

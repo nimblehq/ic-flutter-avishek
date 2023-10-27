@@ -29,7 +29,7 @@ abstract class AuthenticationService extends BaseAuthenticationService {
   );
 
   @override
-  @POST('/v1/oauth/token')
+  @POST('api/v1/oauth/token')
   Future<AuthTokenResponse> refreshToken(
     @Body() RefreshTokenRequest body,
   );
