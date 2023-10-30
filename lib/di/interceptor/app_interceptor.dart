@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_survey/di/di.dart';
 import 'package:flutter_survey/local/local_storage.dart';
+import 'package:flutter_survey/usecases/base/base_use_case.dart';
+import 'package:flutter_survey/usecases/refresh_token_use_case.dart';
 
 const String _authorizationHeader = "Authorization";
 const String _tokenType = "Bearer";
@@ -41,26 +44,32 @@ class AppInterceptor extends Interceptor {
   }
 
   Future<void> _doRefreshToken(
-      DioException ex, ErrorInterceptorHandler handler) async {
+    DioException ex,
+    ErrorInterceptorHandler handler,
+  ) async {
     try {
-      // TODO Request new token
+      final refreshTokenUseCase = getIt<RefreshTokenUseCase>();
+      final result = await refreshTokenUseCase.call();
 
-      // if (result is Success) {
-      // TODO Update new token header
-      // err.requestOptions.headers[_headerAuthorization] = newToken;
+      if (result is Success) {
+        final accessToken = await _localStorage.getAccessToken();
+        final header = "$_tokenType $accessToken";
+        ex.requestOptions.headers[_authorizationHeader] = header;
 
-      // Create request with new access token
-      final options = Options(
-          method: ex.requestOptions.method, headers: ex.requestOptions.headers);
-      final newRequest = await _dio.request(
+        final options = Options(
+          method: ex.requestOptions.method,
+          headers: ex.requestOptions.headers,
+        );
+        final newRequest = await _dio.request(
           "${ex.requestOptions.baseUrl}${ex.requestOptions.path}",
           options: options,
           data: ex.requestOptions.data,
-          queryParameters: ex.requestOptions.queryParameters);
-      handler.resolve(newRequest);
-      //  } else {
-      //    handler.next(err);
-      //  }
+          queryParameters: ex.requestOptions.queryParameters,
+        );
+        handler.resolve(newRequest);
+      } else {
+        handler.next(ex);
+      }
     } catch (exception) {
       if (exception is DioException) {
         handler.next(exception);
