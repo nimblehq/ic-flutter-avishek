@@ -140,7 +140,7 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
                         if (isFirstPage) {
                           _zoomOutAndPop();
                         } else {
-                          // TODO: Implement later
+                          _showExitConfirmationDialog();
                         }
                       });
                     }),
@@ -328,6 +328,36 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
     Future.delayed(
       const Duration(milliseconds: _imageScaleAnimationDurationInMillis),
       context.pop,
+    );
+  }
+
+  void _showExitConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.dialogSurveyExitTitle),
+          content:
+              Text(AppLocalizations.of(context)!.dialogSurveyExitDescription),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                AppLocalizations.of(context)!.dialogSurveyExitPositiveButton,
+              ),
+              onPressed: () {
+                context.pop();
+                _zoomOutAndPop();
+              },
+            ),
+            TextButton(
+              onPressed: context.pop,
+              child: Text(
+                AppLocalizations.of(context)!.dialogSurveyExitNegativeButton,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

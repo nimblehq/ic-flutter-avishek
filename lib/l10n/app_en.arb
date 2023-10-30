@@ -14,5 +14,9 @@
   "submitSurvey": "Submit",
   "hintYourThoughts": "Your thoughts",
   "npsNotAtAllLikely": "Not at all Likely",
-  "npsExtremelyLikely": "Extremely Likely"
+  "npsExtremelyLikely": "Extremely Likely",
+  "dialogSurveyExitTitle": "Warning!",
+  "dialogSurveyExitDescription": "Are you sure you want to quit the survey?",
+  "dialogSurveyExitPositiveButton": "Yes",
+  "dialogSurveyExitNegativeButton": "Cancel"
 }
