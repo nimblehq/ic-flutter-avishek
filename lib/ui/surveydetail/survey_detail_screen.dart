@@ -8,6 +8,7 @@ import 'package:flutter_survey/ui/surveydetail/survey_detail_view_model.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_intro_page.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_question_page.dart';
 import 'package:flutter_survey/usecases/submit_survey_use_case.dart';
+import 'package:flutter_survey/utils/alert_dialog.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../di/di.dart';
@@ -338,31 +339,17 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
   }
 
   void _showExitConfirmationDialog() {
-    showDialog(
+    showAppDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(AppLocalizations.of(context)!.dialogSurveyExitTitle),
-          content:
-              Text(AppLocalizations.of(context)!.dialogSurveyExitDescription),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                AppLocalizations.of(context)!.dialogSurveyExitPositiveButton,
-              ),
-              onPressed: () {
-                context.pop();
-                _zoomOutAndPop();
-              },
-            ),
-            TextButton(
-              onPressed: context.pop,
-              child: Text(
-                AppLocalizations.of(context)!.dialogSurveyExitNegativeButton,
-              ),
-            ),
-          ],
-        );
+      title: AppLocalizations.of(context)!.dialogSurveyExitTitle,
+      description: AppLocalizations.of(context)!.dialogSurveyExitDescription,
+      positiveButtonText:
+          AppLocalizations.of(context)!.dialogSurveyExitPositiveButton,
+      negativeButtonText:
+          AppLocalizations.of(context)!.dialogSurveyExitNegativeButton,
+      onPositiveButtonClick: _zoomOutAndPop,
+      onNegativeButtonClick: () {
+        // Do nothing and stay on the same screen
       },
     );
   }
