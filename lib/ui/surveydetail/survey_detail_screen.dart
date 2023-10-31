@@ -8,6 +8,7 @@ import 'package:flutter_survey/ui/surveydetail/survey_detail_view_model.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_intro_page.dart';
 import 'package:flutter_survey/ui/surveydetail/survey_question_page.dart';
 import 'package:flutter_survey/usecases/submit_survey_use_case.dart';
+import 'package:flutter_survey/utils/alert_dialog.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../di/di.dart';
@@ -112,66 +113,72 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
       shouldZoomInBackground.state = true;
     });
     return survey != null
-        ? Stack(
-            children: [
-              Consumer(builder: (_, ref, __) {
-                final shouldZoomInBackground =
-                    ref.watch(shouldZoomInBackgroundProvider);
-                return AnimatedScale(
-                  duration: const Duration(
-                    milliseconds: _imageScaleAnimationDurationInMillis,
+        ? WillPopScope(
+            onWillPop: () async {
+              _showExitConfirmationDialog();
+              return false;
+            },
+            child: Stack(
+              children: [
+                Consumer(builder: (_, ref, __) {
+                  final shouldZoomInBackground =
+                      ref.watch(shouldZoomInBackgroundProvider);
+                  return AnimatedScale(
+                    duration: const Duration(
+                      milliseconds: _imageScaleAnimationDurationInMillis,
+                    ),
+                    scale: shouldZoomInBackground
+                        ? _finalBackgroundScale
+                        : _initialBackgroundScale,
+                    child: DimmedImageBackground(
+                      image: Image.network(survey.largeCoverImageUrl).image,
+                      shouldAnimate: true,
+                    ),
+                  );
+                }),
+                SafeArea(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Consumer(builder: (_, ref, __) {
+                        final isFirstPage = ref.watch(pageIndexProvider) == 0;
+                        return _buildToolbar(isFirstPage, () {
+                          if (isFirstPage) {
+                            _zoomOutAndPop();
+                          } else {
+                            _showExitConfirmationDialog();
+                          }
+                        });
+                      }),
+                      Expanded(child: _buildSurveyQuestionPager(survey))
+                    ],
                   ),
-                  scale: shouldZoomInBackground
-                      ? _finalBackgroundScale
-                      : _initialBackgroundScale,
-                  child: DimmedImageBackground(
-                    image: Image.network(survey.largeCoverImageUrl).image,
-                    shouldAnimate: true,
-                  ),
-                );
-              }),
-              SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Consumer(builder: (_, ref, __) {
-                      final isFirstPage = ref.watch(pageIndexProvider) == 0;
-                      return _buildToolbar(isFirstPage, () {
-                        if (isFirstPage) {
-                          _zoomOutAndPop();
-                        } else {
-                          // TODO: Implement later
-                        }
-                      });
-                    }),
-                    Expanded(child: _buildSurveyQuestionPager(survey))
+                    const Expanded(child: SizedBox.shrink()),
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Row(
+                        children: [
+                          const Expanded(child: SizedBox.shrink()),
+                          Consumer(builder: (_, ref, __) {
+                            final index = ref.watch(pageIndexProvider);
+                            return _buildActionButton(context, index);
+                          }),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Expanded(child: SizedBox.shrink()),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      children: [
-                        const Expanded(child: SizedBox.shrink()),
-                        Consumer(builder: (_, ref, __) {
-                          final index = ref.watch(pageIndexProvider);
-                          return _buildActionButton(context, index);
-                        }),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Center(
-                child: isLoading
-                    ? const LoadingIndicator()
-                    : const SizedBox.shrink(),
-              )
-            ],
+                Center(
+                  child: isLoading
+                      ? const LoadingIndicator()
+                      : const SizedBox.shrink(),
+                )
+              ],
+            ),
           )
         : const SizedBox.shrink();
   }
@@ -328,6 +335,22 @@ class SurveyDetailScreenState extends ConsumerState<SurveyDetailScreen> {
     Future.delayed(
       const Duration(milliseconds: _imageScaleAnimationDurationInMillis),
       context.pop,
+    );
+  }
+
+  void _showExitConfirmationDialog() {
+    showAppDialog(
+      context: context,
+      title: AppLocalizations.of(context)!.dialogSurveyExitTitle,
+      description: AppLocalizations.of(context)!.dialogSurveyExitDescription,
+      positiveButtonText:
+          AppLocalizations.of(context)!.dialogSurveyExitPositiveButton,
+      negativeButtonText:
+          AppLocalizations.of(context)!.dialogSurveyExitNegativeButton,
+      onPositiveButtonClick: _zoomOutAndPop,
+      onNegativeButtonClick: () {
+        // Do nothing and stay on the same screen
+      },
     );
   }
 }
